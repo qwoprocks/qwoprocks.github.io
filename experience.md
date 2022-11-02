@@ -1,3 +1,7 @@
+---
+title: Work Experience
+---
+
 # Samsung
 
 ## Machine Learning Intern

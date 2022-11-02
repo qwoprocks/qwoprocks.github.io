@@ -1,5 +1,5 @@
 ---
-layout: Education
+title: Education
 ---
 
 # National University of Singapore
