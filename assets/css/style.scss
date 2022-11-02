@@ -3,6 +3,11 @@
 
 @import "{{ site.theme }}";
 
+/* Override */
+section {
+  width: 550px;
+}
+
 .nav li.active a {
 	font-weight: bold;
     color: gray;
