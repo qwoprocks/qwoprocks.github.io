@@ -3,14 +3,8 @@ description: Welcome to my personal website, feel free to look around!
 nav:
   - title: Education
     url: /education.html
-    subnav:
-      - title: Heroku
-        url: /heroku.html
-        subnav:
-          - title: Jekyll on Heroku
-            url: /jekyll-on-heroku.html
-  - title: Help
-    url: /help.html
+  - title: Work Experience
+    url: /experience.html
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:
   - jekyll-remote-theme # add this line to the plugins list if you already have one
