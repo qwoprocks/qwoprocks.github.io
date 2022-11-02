@@ -1,6 +1,6 @@
 title: mc.dev
 description: Welcome to my personal website, feel free to look around!
-nav:
+nav: # refer to https://jekyllrb.com/tutorials/navigation/
   - title: Education
     url: /education.html
   - title: Work Experience

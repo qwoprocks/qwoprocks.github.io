@@ -1,3 +1,7 @@
+---
+layout: Education
+---
+
 # National University of Singapore
 
 ## Bachelor of Computing in Computer Science with Honours
