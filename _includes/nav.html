@@ -1,4 +1,4 @@
-<ul>
+<ul class="nav">
   {% for item in include.nav %}
     <li class="{% if item.url == page.url %}active{% endif %}">
       <a href="{{ item.url }}">{{ item.title }}</a>
