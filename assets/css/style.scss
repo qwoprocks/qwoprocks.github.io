@@ -4,6 +4,7 @@
 @import "{{ site.theme }}";
 
 .result li.active a {
+	font-weight: bold;
     color: lightgray;
     cursor: default;
 }
