@@ -28,8 +28,11 @@
         {% endif %}
 
         {% if site.github.is_user_page %}
-        <p class="view"><a href="{{ site.github.owner_url }}"><img title="My GitHub" src="{{ "/assets/img/github_logo.png" | relative_url }}" width="28px" height="28px"/></a></p>
-        <p class="view"><a href="https://www.linkedin.com/in/ming-chong-lim/"><img title="My LinkedIn" src="{{ "/assets/img/linkedin_logo.png" | relative_url }}" height="28px"/></a></p>
+        <p class="view">
+          <a href="{{ site.github.owner_url }}"><img title="My GitHub" src="{{ "/assets/img/github_logo.png" | relative_url }}" width="28px" height="28px"/></a>
+          &nbsp;&nbsp;&nbsp;
+          <a href="https://www.linkedin.com/in/ming-chong-lim/"><img title="My LinkedIn" src="{{ "/assets/img/linkedin_logo.png" | relative_url }}" height="28px"/></a>
+        </p>
         {% endif %}
       </header>
       <section>
