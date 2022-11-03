@@ -29,7 +29,7 @@ title: Education
 	- CS2100 Computer Organisation (A+)
 	- CS2030 Programming Methodology II (A+)
 	- CS1231S Discrete Structures (A+)
-	- MA1521 Linear Algebra I (A+)
+	- MA1101R Linear Algebra I (A+)
 
 # The University of British Columbia
 
