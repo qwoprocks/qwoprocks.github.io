@@ -8,7 +8,7 @@ title: Education
 
 ### Aug 2019 - May 2023
 
-- GPA: 4.88 / 5.00 (3.90 / 4.00)
+- **GPA: 4.88 / 5.00 (3.90 / 4.00)**
 - Artificial Intelligence Focus Area (Distinction)
 - Dean's list for:
 	- AY2021/2022 Semester 1
@@ -37,7 +37,7 @@ title: Education
 
 ### Jan 2022 - May 2022
 
-- GPA: 4.20 / 4.00
+- **GPA: 4.20 / 4.00**
 - Relevant modules:
 	- CPSC 340 Machine Learning and Data Mining (A+)
 	- STAT 305 Introduction to Statistical Inference (A+)
