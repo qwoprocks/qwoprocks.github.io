@@ -26,3 +26,15 @@ The hackathon took place over 2 weeks, involving the following challenges:
 # July 2020: BrainHack Today I Learned
 
 ## 2nd Place
+
+# March 2016: Singapore Science and Engineering Fair
+
+## Silver Award
+
+My project was about the classification of handwritten characters by applying feature extraction on images and subsequently feeding these features into a small and simple feedforward neural network for classification. The feature extraction involved the following steps:
+- Binarization of the image via Otsu's method
+- Skeletonization
+- Removing all connected components that were too small based on a threshold
+- Extracting a fixed sample of points by tracing the remaining skeletons in a fixed order
+
+This preprocessing helped my model achieve comparable results to the state of the art (at that point in time). I presented my methodology and results to 3 judges at the Engineering Fair in the form of a poster, and received the Silver Award for my efforts.
