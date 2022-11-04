@@ -28,10 +28,10 @@ title: Work Experience
 
 ### Jan 2020 - Present
 
-- Taught the following modules: 
-	- CS2109S Introduction to AI and Machine Learning
-	- CS3241 Computer Graphics
-	- CS2106 Introduction to Operating Systems
-	- CS2040S Data Structures and Algorithms
-	- CS2103T Software Engineering
-	- CS2030 Programming Methodology II
+Taught the following modules: 
+- CS2109S Introduction to AI and Machine Learning
+- CS3241 Computer Graphics
+- CS2106 Introduction to Operating Systems
+- CS2040S Data Structures and Algorithms
+- CS2103T Software Engineering
+- CS2030 Programming Methodology II
