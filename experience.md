@@ -35,3 +35,5 @@ Taught the following modules:
 - CS2040S Data Structures and Algorithms
 - CS2103T Software Engineering
 - CS2030 Programming Methodology II
+
+Nominated for teaching awards by 9 students
