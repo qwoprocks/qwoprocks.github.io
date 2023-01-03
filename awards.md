@@ -27,11 +27,41 @@ The hackathon took place over 2 weeks, involving the following challenges:
 
 ## 2nd Place
 
+The qualifying round of the hackathon involved a Kaggle competition comprising two challenges:
+
+- Text classification:
+	- Given a natural sentence, perform multiclass classification to identify various key aspects, such as their gender as well as their clothes.
+	- Our team used a bi-directional LSTM with attention, as well as label smoothing, tuning it with five-fold cross-validation, and achieved the highest F1-score on the private leaderboard among all teams.
+- Object detection:
+	- Given an image, draw bounding boxes indicating where in the image there are clothes, as well as what kind of clothes they are, such as trousers or dresses.
+	- Evaluation was based on mAP.
+	- Our team used an ensemble of 5 different object detection models, comprising YOLOv4, YOLOv5, EfficientDet, DETR, and RetinaNet, and combined their predictions using [Weighted-Boxes-Fusion](https://github.com/ZFTurbo/Weighted-Boxes-Fusion). We used different image augmentation methods for each model to increase diversity.
+
+Our team emerged as the top team on the final private leaderboard.
+
+The second (and final) stage of the hackathon was a disaster rescue scenario involving several connected challenges. This stage was conducted physically, and all challenges below had to run consecutively without any human intervention.
+
+- Aerial photography of disaster site using a drone:
+	- We were tasked to write code that could fly a small drone upwards, locate a landmark on the ground, position itself over that landmark, and capture the scene.
+	- The captured scene was used as the input to the next part of the challenge.
+- Autonomous path finding and obstacle avoidance based on the aerial photograph:
+	- The obstacles' colors were distinct from the ground's colors, so we used OpenCV to perform color filtering and segment the scene into unobstructed vs obstructed areas.
+	- The areas were subdivided into smaller grids that we ran the A* search algorithm on. The destination location was detected in the scene by using text detection software as it was marked out with a letter.
+	- The path found by the A* search algorithm was translated to real world measurements by scaling it based on an object with a known size in the scene. In our case, we used the letter that marked the destination as our reference.
+- Autonomous identification of target given a natural language input:
+	- The "people" in the scene were all wearing distinct sets of clothing, for example one could be wearing a red shirt and jeans while another would be wearing a blue shirt and jeans. We got the robot to capture still images of all the "people" by having it rotate to roughly locate each "person", followed by using a person detection model (YOLOv4) to extract their bounding box. The image was then cropped to the bounding box (with some padding) and fed to the CV model.
+	- We then had to run the natural language input of the target given through our NLP model and compare its outputs with our CV model's output for each "person" to identify the correct target. Sample natural language input would be something like: "She wore grey long pants with a hoodie and had fair skin.".
+- Autonomous grabbing of target with a robotic arm:
+	- We had to write code that could move the robot forward to the correct distance away from the target based on the camera feed and move the robotic arm to grab the target firmly.
+	- We rotate the robot roughly to the direction of the target, then use a person detection model to find the bounding box of the target, and made minor adjustments after each forward movement to ensure that the bounding box was still roughly in the middle, which would ensure that the robot was not straying off track.
+	- We used an empirical method to pre-determine some thresholds the bounding box would hit when the robot is close enough to grab the person, and made sure that these thresholds weren't overshot by scaling down the range of the robot's forward motion as it approached the target. Once the thresholds were hit, the grabbing action sequence would be activated, and it would grab the target accurately and firmly.
+
 # March 2016: Singapore Science and Engineering Fair
 
 ## Silver Award
 
 My project was about the classification of handwritten characters by applying feature extraction on images and subsequently feeding these features into a small and simple feedforward neural network for classification. The feature extraction involved the following steps:
+
 - Binarization of the image via Otsu's method
 - Skeletonization
 - Removing all connected components that were too small based on a threshold
