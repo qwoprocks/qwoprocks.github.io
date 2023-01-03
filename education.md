@@ -8,7 +8,7 @@ title: Education
 
 ### Aug 2019 - May 2023
 
-- **GPA: 4.88 / 5.00 (3.90 / 4.00)**
+- **GPA: 4.88 / 5.00 (3.92 / 4.00)**
 - Artificial Intelligence Focus Area (Distinction)
 - Dean's list for:
 	- AY2021/2022 Semester 1
