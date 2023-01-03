@@ -41,4 +41,4 @@ title: Education
 - Relevant modules:
 	- CPSC 340 Machine Learning and Data Mining (A+)
 	- STAT 305 Introduction to Statistical Inference (A+)
-- Participated in sporting clubs such as the rock climbing club and varsity outdoor club
+- Participated in sporting clubs such as the rock climbing club and the varsity outdoor club
