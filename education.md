@@ -2,6 +2,26 @@
 title: Education
 ---
 
+# Carnegie Mellon University 
+
+## Master's in Machine Learning
+
+### Aug 2024 - Aug 2025
+
+- **GPA: 4.07 / 4.00**
+- Research:
+	- [VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks](https://jykoh.com/vwa)
+- Relevant modules:
+	- 15-642 Machine Learning Systems
+	- 10‐617 Intermediate Deep Learning
+	- 10‐715 Advanced Introduction to Machine Learning
+	- 10-718 Machine Learning in Practice
+	- 16-726 Learning-Based Image Synthesis
+	- 16-720 Computer Vision
+	- 36‐705 Intermediate Statistics
+	- 10‐725 Convex Optimization
+	- 10-708 Probabilistic Graphical Models
+
 # National University of Singapore
 
 ## Bachelor of Computing in Computer Science with Honours

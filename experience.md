@@ -2,6 +2,40 @@
 title: Work Experience
 ---
 
+# DRW
+
+## Quantitative Developer Intern
+
+### May 2024 - Aug 2024
+
+- Parallelized and refactored several parts of a Python code base used to support Quantitative Researchers, increasing scalability and reducing latency by 30%
+- Found and fixed a high-latency-impact, low-reproducibility bug that occurred in production
+- Developed a framework for regression testing and reproducing production bugs in a semi-realistic setting
+- Supported other team's C++ operations, and wrote small scripts to automate processes
+
+# Carneige Mellon University
+
+## Teaching Assistant
+
+### Jan 2024 - May 2024
+
+Taught 10-725 Convex Optimization
+- Hosted weekly Office Hours for a cohort of 80 students
+- Created exam and homework questions for the course
+- Graded homework assignments and gave personalized feedback on mistakes made
+
+# Defence Science and Technology Agency
+
+## Software Engineer Intern (C++)
+
+### Jan 2023 - Jun 2023
+
+- Improve in-house computer vision algorithms for robust detection and locating of drones in various environments
+- Modify open-source code to fit client use cases, integrating it with various drone hardware and the existing code base
+- Work on improving UI/UX for current user-facing software
+- Develop drone algorithms for drone-vs-drone purposes (taking down another drone using a drone)
+- Conduct on-the-ground experiments to determine the efficacy of different approaches
+
 # Samsung
 
 ## Machine Learning Intern

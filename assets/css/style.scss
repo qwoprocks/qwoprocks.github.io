@@ -3,8 +3,6 @@
 
 @import "{{ site.theme }}";
 
-/* Override */
-
 body {
   background-color: #fff;
   padding:50px;
@@ -26,8 +24,9 @@ h1, h2, h3 {
   line-height:1.1;
 }
 
-h1 {
+h1:nth-child(n+2) {
   font-size:28px;
+  margin-top:1.9em;
 }
 
 h2 {
@@ -44,8 +43,8 @@ a {
 }
 
 a:hover, a:focus {
-  color:#069;
-  font-weight: bold;
+  color:#047;
+  font-weight: inherit;
 }
 
 a small {
@@ -60,7 +59,7 @@ a:hover small {
 }
 
 .wrapper {
-  width:860px;
+  width:960px;
   margin:0 auto;
 }
 
@@ -126,7 +125,14 @@ header {
   width:270px;
   float:left;
   position:fixed;
+  display:flex;
+  flex-direction:column;
   -webkit-font-smoothing:subpixel-antialiased;
+  min-height:calc(100vh - 80px);
+}
+
+.last-item {
+  margin-top:auto;
 }
 
 ul.downloads {
@@ -166,7 +172,6 @@ ul.downloads {
 
 .downloads a:hover, .downloads a:focus {
   color:#675C5C;
-  font-weight:bold;
 }
 
 .downloads ul a:active {
@@ -190,7 +195,7 @@ strong {
 }
 
 section {
-  width:550px;
+  width:650px;
   float:right;
   padding-bottom:50px;
 }
@@ -229,6 +234,7 @@ footer {
 
   header {
     padding-right:320px;
+    min-height:auto;
   }
 
   section {
@@ -289,8 +295,75 @@ footer {
   }
 }
 
-.nav li.active a {
-	font-weight: bold;
-    color: gray;
-    cursor: default;
+header {
+  $header-link-color: #6C765B;
+
+  hr {
+    height: 0.2em;
+    width: 28%;
+    background-color: darken($header-link-color, 4%);
+  }
+
+  h2 {
+    a {
+      color: $header-link-color;
+    }
+    a:hover {
+      color: darken($header-link-color, 8%);
+    }
+  }
+
+  .nav {
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    padding:0;
+    margin-top:15px;
+    margin-bottom:30px;
+    font-size: 1.1em;
+  
+    li {
+      list-style-type:none;
+  
+      &.active {
+        a {
+          font-weight: bold;
+          color: darken($header-link-color, 10%);
+          cursor: default;
+        }
+  
+        a::after {
+          display: none;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+  
+      a {
+        display: inline-block;
+        color: $header-link-color;
+        text-decoration: none;
+        position: relative;
+        padding: 0.2em 0;
+        overflow: hidden;
+      }
+  
+      a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 0.1em;
+        background-color: $header-link-color;
+        transition: opacity 300ms, transform 300ms;
+        opacity: 1;
+        transform: translate3d(-100%, 0, 0);
+      }
+  
+      a:hover::after,
+      a:focus::after{
+        transform: translate3d(0, 0, 0);
+      }
+    }
+  }
 }
