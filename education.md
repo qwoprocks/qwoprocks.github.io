@@ -10,7 +10,7 @@ title: Education
 
 - **GPA: 4.07 / 4.00**
 - Research:
-	- [VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks](https://jykoh.com/vwa)
+	- [VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks](https://jykoh.com/vwa){:target="_blank"}
 - Relevant modules:
 	- 15-642 Machine Learning Systems
 	- 10‐617 Intermediate Deep Learning

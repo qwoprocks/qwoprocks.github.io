@@ -35,7 +35,7 @@ The qualifying round of the hackathon involved a Kaggle competition comprising t
 - Object detection:
 	- Given an image, draw bounding boxes indicating where in the image there are clothes, as well as what kind of clothes they are, such as trousers or dresses.
 	- Evaluation was based on mAP.
-	- Our team used an ensemble of 5 different object detection models, comprising YOLOv4, YOLOv5, EfficientDet, DETR, and RetinaNet, and combined their predictions using [Weighted-Boxes-Fusion](https://github.com/ZFTurbo/Weighted-Boxes-Fusion). We used different image augmentation methods for each model to increase diversity.
+	- Our team used an ensemble of 5 different object detection models, comprising YOLOv4, YOLOv5, EfficientDet, DETR, and RetinaNet, and combined their predictions using [Weighted-Boxes-Fusion](https://github.com/ZFTurbo/Weighted-Boxes-Fusion){:target="_blank"}. We used different image augmentation methods for each model to increase diversity.
 
 Our team emerged as the top team on the final private leaderboard.
 
