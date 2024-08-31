@@ -211,8 +211,12 @@ footer {
   width:270px;
   float:left;
   position:fixed;
-  bottom:min(100vh - 39em, 50px);
+  bottom:min(100vh - 40em, 50px);
   -webkit-font-smoothing:subpixel-antialiased;
+  
+  p {
+    margin-bottom: 5px;
+  }
 }
 
 @media print, screen and (max-width: 960px) {
@@ -312,7 +316,7 @@ header {
   .nav {
     display:flex;
     flex-direction:column;
-    gap:18px;
+    gap:2.2vh;
     padding:0;
     margin-top:22px;
     margin-bottom:35px;
