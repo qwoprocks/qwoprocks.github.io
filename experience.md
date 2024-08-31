@@ -13,7 +13,7 @@ title: Work Experience
 - Developed a framework for regression testing and reproducing production bugs in a semi-realistic setting
 - Supported other team's C++ operations, and wrote small scripts to automate processes
 
-# Carneige Mellon University
+# Carnegie Mellon University
 
 ## Teaching Assistant
 
