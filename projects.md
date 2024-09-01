@@ -19,6 +19,40 @@ title: Projects
 {{ includeGuts | replace: '  ', ''}}
 
 
+{% capture imgsynProj5Logo %}
+{{ "/assets/img/imgsyn_proj5_logo.png" | relative_url }}
+{% endcapture %}
+
+{% capture includeGuts %}
+{% include card.html link="https://www.andrew.cmu.edu/course/16-726-sp24/projects/mingchol/proj5/"
+                     linktarget="_blank"
+                     image=imgsynProj5Logo
+                     alt="Logo for sketch2image"
+                     title="Sketch2Image"
+                     description="A project done for 16-726 Image Synthesis at CMU involving image synthesis through latent variable manipulation" 
+                     time="Apr 2024"
+                     authors="Ming Chong Lim"   %}
+{% endcapture %}
+{{ includeGuts | replace: '  ', ''}}
+
+
+{% capture imgsynProj4Logo %}
+{{ "/assets/img/imgsyn_proj4_logo.png" | relative_url }}
+{% endcapture %}
+
+{% capture includeGuts %}
+{% include card.html link="https://www.andrew.cmu.edu/course/16-726-sp24/projects/mingchol/proj4/"
+                     linktarget="_blank"
+                     image=imgsynProj4Logo
+                     alt="Logo for neural style transfer"
+                     title="Neural Style Transfer"
+                     description="A project done for 16-726 Image Synthesis at CMU involving texture synthesis and style transfer"
+                     time="Mar 2024"
+                     authors="Ming Chong Lim"   %}
+{% endcapture %}
+{{ includeGuts | replace: '  ', ''}}
+
+
 {% capture routemakerLogo %}
 {{ "/assets/img/routemaker_logo.jpg" | relative_url }}
 {% endcapture %}
