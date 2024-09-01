@@ -1,0 +1,13 @@
+<article class="card">
+    <figure class="card-figure">
+        <img class="card-image" src="{{ include.image }}" alt="{{ include.alt }}">
+    </figure>
+    <header class="card-title">{{ include.title }}</header>
+    <div class="card-desc">
+        {{ include.description }}
+    </div>
+    <footer class="card-footer">
+        <small>{{ include.time }} | {{ include.authors }}</small>
+    </footer>
+    <a class="card-link" href="{{ include.link }}" target="{{ include.linktarget }}"></a>
+</article>
