@@ -2,13 +2,13 @@
 ---
 
 @import "{{ site.theme }}";
-
+@import "variables";
 
 body {
   background-color: #fff;
   padding:50px;
   font: 15px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color:#727272;
+  color: $default-font-color;
   font-weight:400;
 }
 
