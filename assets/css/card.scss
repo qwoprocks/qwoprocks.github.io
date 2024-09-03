@@ -18,7 +18,7 @@
     box-shadow: 4px 4px rgba(0, 0, 0, 0.1);
 
     &:hover {
-        background-color: #efeef5;
+        background-color: #ececf3;
     }
 
     .card-figure {
@@ -60,5 +60,9 @@
         height: 100%;
         top: 0;
         left: 0;
+
+        &::after {
+            display: none;
+        }
     }
 }
