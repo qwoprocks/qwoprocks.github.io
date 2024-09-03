@@ -1,3 +1,7 @@
+---
+title: About Me
+---
+
 # 👋 Hi, I'm Ming Chong
 
 I'm a Master's student at Carnegie Mellon University (CMU), enrolled in the [Master's in Machine Learning](https://www.ml.cmu.edu/academics/primary-ms-machine-learning-masters.html){:target="_blank"} degree. 
