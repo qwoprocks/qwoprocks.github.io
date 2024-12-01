@@ -704,6 +704,8 @@ const makePlane = () => {
 
   const positionAttribute = plane.geometry.attributes.position;
 
+  const seed = Math.random() * 100;
+
   // Modify each vertex position
   for (let i = 0; i < positionAttribute.count; i++) {
       // Get the current vertex position
@@ -711,7 +713,7 @@ const makePlane = () => {
       const y = positionAttribute.getY(i);
       const z = positionAttribute.getZ(i);
       // Set the new vertex position (for example, adding an offset)
-      positionAttribute.setXYZ(i, x, y + PERLIN.noise(x * 0.0004, z * 0.0008, 1.0) * 165, z);
+      positionAttribute.setXYZ(i, x, y + PERLIN.noise(seed + x * 0.0004, seed + z * 0.0008, 1.0) * 165, z);
   }
   positionAttribute.needsUpdate = true;
   plane.geometry.computeVertexNormals();
@@ -1012,6 +1014,8 @@ const makeGrass = (
   const _normal = new THREE.Vector3();
   const _dummy = new THREE.Object3D();
 
+  const seed = Math.random() * 100;
+
   const _color = new THREE.Color();
   for (let i = 0; i < NUM_GRASS; i++) {
     sampler.sample(_position, _normal);
@@ -1023,8 +1027,8 @@ const makeGrass = (
     _dummy.lookAt(_normal);
     _dummy.updateMatrix();
     grass.setMatrixAt(i, _dummy.matrix);
-    let x = _position.x * 0.005 - 30;
-    let y = _position.z * 0.009 + 0.3;
+    let x = seed + _position.x * 0.005 - 30;
+    let y = seed + _position.z * 0.009 + 0.3;
     let z = 80.0;
     let p = fbm((freq) => PERLIN.noise(x * freq, y * freq, z), 4, 2.0, 0.5);
     p = (p + 1.0) / 2.0 * 0.9649214285521897;
@@ -1051,7 +1055,7 @@ const makeClouds = (noise_texture) => {
     uniforms: {
       base: { value: new THREE.Color( 0x798aa0 ) },
       textureNoise: { value: noise_texture },
-      frame: { value: 4.5 },
+      frame: { value: Math.random() * 100. },
     },
     vertexShader: `
     varying vec3 vOrigin;
