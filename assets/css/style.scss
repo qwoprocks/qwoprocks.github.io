@@ -59,8 +59,8 @@ a:hover small {
   color:#777;
 }
 
-section a[href^="http"]::after,
-section a[href^="https://"]::after
+section a[href^="http"]:not(.noicon)::after,
+section a[href^="https://"]:not(.noicon)::after
 {
   content: "";
   width: 11px;
@@ -389,5 +389,25 @@ header {
         transform: translate3d(0, 0, 0);
       }
     }
+  }
+}
+
+.sourceCodeButton {
+  float: right;
+  background-color: #fff;
+  opacity: 0.9;
+  border-radius: 50%;
+  margin-top: -50px;
+  margin-right: 10px;
+  padding: 10px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+  -webkit-transform: translateZ(0); // this fixes some rendering bugs in chrome, see: https://stackoverflow.com/questions/15051557/very-difficult-to-solve-and-strange-css3-opacity-transition-issue-must-be-a/31887757
+  &:hover {
+    opacity: 1.0;
+  }
+  img {
+    display: block;
+    width: 15px;
+    height: 15px;
   }
 }

@@ -1372,6 +1372,7 @@ updateFrustum();
 const GPU_COMPUTE = makeGPUComputationRenderer3D(256, 256, 256, RENDERER);
 
 window.onload = () => {
+  const container = document.querySelector("body .wrapper section");
   CLOCK.start();
 
   const noiseTexture = GPU_COMPUTE.createTexture();
@@ -1421,15 +1422,25 @@ window.onload = () => {
   RENDERER.setPixelRatio(window.devicePixelRatio);
   RENDERER.setSize(WIDTH, HEIGHT);
   RENDERER.setAnimationLoop(animate);
-  document.querySelector("body .wrapper section").appendChild(RENDERER.domElement);
+  container.appendChild(RENDERER.domElement);
+
+  // Add source code button
+  const button = document.createElement('a');
+  button.className = 'sourceCodeButton noicon';
+  button.href = 'https://github.com/qwoprocks/qwoprocks.github.io/blob/main/assets/js/grass/main.js';
+  button.target = '_blank';
+  const button_icon = document.createElement('img');
+  button_icon.src = '/assets/img/code_ic_icon.svg';
+  button.appendChild(button_icon);
+
+  container.appendChild(button);
 
   const renderPass = new RenderPass(SCENE, CAMERA);
   const kuwaharaPass = getKuwaharaPass(4, WIDTH, HEIGHT);
 
   const composer = new EffectComposer(RENDERER);
   composer.addPass(renderPass);
-  // composer.addPass(bloomPass);
-  composer.addPass(kuwaharaPass);
+  // composer.addPass(kuwaharaPass);
 
   const resizeObserver = new ResizeObserver((entries) => {
     if (entries.length !== 1) {
@@ -1441,5 +1452,5 @@ window.onload = () => {
     const new_display_height = new_display_width / ASPECT_RATIO;
     RENDERER.setSize(new_display_width, new_display_height);
   });
-  resizeObserver.observe(document.querySelector("body .wrapper section"));
+  resizeObserver.observe(container);
 };
