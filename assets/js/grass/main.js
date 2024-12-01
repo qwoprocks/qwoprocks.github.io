@@ -1043,15 +1043,15 @@ const makeGrass = (
 
 const makeClouds = (noise_texture) => {
   const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const threshold = 0.4;
+  const opacity = 0.8;
+  const range = 0.1;
+  const steps = 15;
   const material = new THREE.ShaderMaterial({
     uniforms: {
       base: { value: new THREE.Color( 0x798aa0 ) },
       textureNoise: { value: noise_texture },
-      threshold: { value: 0.4 },
-      opacity: { value: 0.8 },
-      range: { value: 0.1 },
-      steps: { value: 15 },
-      frame: { value: 4.5 },
+      frame: { value: 0. },
     },
     vertexShader: `
     varying vec3 vOrigin;
@@ -1074,13 +1074,13 @@ const makeClouds = (noise_texture) => {
     varying vec3 vDirection;
     varying vec3 vPosition;
 
+    const float threshold = ${threshold};
+    const float range = ${range};
+    const float opacity = ${opacity};
+    const int steps = ${steps};
+
     uniform sampler3D textureNoise;
     uniform vec3 base;
-
-    uniform float threshold;
-    uniform float range;
-    uniform float opacity;
-    uniform int steps;
     uniform float frame;
 
     uint wang_hash(uint seed) {
@@ -1110,14 +1110,14 @@ const makeClouds = (noise_texture) => {
     }
 
     float sample1(vec3 p) {
-      vec3 np = p - frame * vec3(0.00625, 0.00125, 0.025);
+      vec3 np = p * vec3(.26, .5, 1.0) - frame * vec3(0.00625, 0.00125, 0.025);
       float cloud = texture(textureNoise, np * 1.3).x;
       // height gradient
       float h = vPosition.y + 0.5;
       if (h < 0.1) {
         cloud *= max(pow(1. - pow(abs(10. * h - 1.0), 3.), 3.), 0.); 
       } else {
-        cloud *= -pow(2.1 * (h - 0.1), 3.) + 1.;
+        cloud *= -pow(1.1 * (h - 0.1), 3.) + 1.;
       }
       return cloud;
     }
@@ -1178,7 +1178,10 @@ const makeClouds = (noise_texture) => {
     }
     `,
     side: THREE.BackSide,
-    transparent: true
+    transparent: true,
+    extensions: {clipCullDistance: true, multiDraw: false},
+    needsUpdate: false,
+    forceSinglePass: true,
   });
 
   return new THREE.Mesh(geometry, material);
@@ -1354,9 +1357,9 @@ const CAMERA = new THREE.PerspectiveCamera(
   10000           // Far clipping plane
 );
 // Position the camera so it can view the ground plane and other objects
-CAMERA.position.set(0, 110, 10);
+CAMERA.position.set(0, 120, 10);
 // Look straight ahead
-CAMERA.lookAt(0, 110, 0);
+CAMERA.lookAt(0, 120, 0);
 
 const FRUSTUM = new THREE.Frustum();
 const PROJ_SCREEN_MATRIX = new THREE.Matrix4();
@@ -1392,8 +1395,8 @@ window.onload = () => {
   const grass = makeGrass(plane, 180, 20, cloud_noise_texture);
 
   const clouds = makeClouds(cloud_noise_texture);
-  clouds.position.set(0, 2050, -1000);
-  clouds.scale.set(5000, 4000, 1000);
+  clouds.position.set(0, 1140, -1000);
+  clouds.scale.set(1200, 2000, 1000);
 
   const mountains = makeMountains();
   mountains.position.set(0, 0, -5550);
