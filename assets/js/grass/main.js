@@ -1051,7 +1051,7 @@ const makeClouds = (noise_texture) => {
     uniforms: {
       base: { value: new THREE.Color( 0x798aa0 ) },
       textureNoise: { value: noise_texture },
-      frame: { value: 0. },
+      frame: { value: 4.5 },
     },
     vertexShader: `
     varying vec3 vOrigin;
@@ -1110,14 +1110,14 @@ const makeClouds = (noise_texture) => {
     }
 
     float sample1(vec3 p) {
-      vec3 np = p * vec3(.26, .5, 1.0) - frame * vec3(0.00625, 0.00125, 0.025);
+      vec3 np = p * vec3(.94, .5, 1.0) - frame * vec3(0.00625, 0.00125, 0.025);
       float cloud = texture(textureNoise, np * 1.3).x;
       // height gradient
       float h = vPosition.y + 0.5;
       if (h < 0.1) {
         cloud *= max(pow(1. - pow(abs(10. * h - 1.0), 3.), 3.), 0.); 
       } else {
-        cloud *= -pow(1.1 * (h - 0.1), 3.) + 1.;
+        cloud *= -pow(1.45 * (h - 0.1), 3.) + 1.;
       }
       return cloud;
     }
@@ -1180,8 +1180,8 @@ const makeClouds = (noise_texture) => {
     side: THREE.BackSide,
     transparent: true,
     extensions: {clipCullDistance: true, multiDraw: false},
-    needsUpdate: false,
     forceSinglePass: true,
+    alphaTest: 0.51,
   });
 
   return new THREE.Mesh(geometry, material);
@@ -1396,7 +1396,7 @@ window.onload = () => {
 
   const clouds = makeClouds(cloud_noise_texture);
   clouds.position.set(0, 1140, -1000);
-  clouds.scale.set(1200, 2000, 1000);
+  clouds.scale.set(4000, 2000, 1000);
 
   const mountains = makeMountains();
   mountains.position.set(0, 0, -5550);
@@ -1409,17 +1409,21 @@ window.onload = () => {
 
   SCENE.fog = new THREE.Fog(0x5973a9, 5450, 5550);
 
-  let prev_update_time = 0;
+  let delta_fps = 0;
   const animate = (time) => {
-    if (time - prev_update_time > DESIRED_DT) {
-      grass.material.uniforms.uTime.value += 0.001;
-      grass.material.needsUpdate = true;
-      cloud_noise_texture.needsUpdate = false;
-      clouds.material.uniforms.frame.value += 0.001;
-
-      composer.render(SCENE, CAMERA);
-
-      prev_update_time = time;
+    let delta = CLOCK.getDelta();
+    delta_fps += delta;
+    if (delta && delta != null) {
+      while (delta_fps >= DESIRED_DT) {
+        if (delta_fps < 0.3) {
+          grass.material.uniforms.uTime.value += 0.004;
+          grass.material.needsUpdate = true;
+          clouds.material.uniforms.frame.value += 0.004;
+    
+          composer.render(SCENE, CAMERA);
+        }
+        delta_fps -= DESIRED_DT;
+      }
     }
   }
   RENDERER.setPixelRatio(window.devicePixelRatio);
