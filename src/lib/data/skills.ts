@@ -30,7 +30,8 @@ export const skillGroups: SkillGroup[] = [
 			{ name: 'TensorFlow', proficient: true, level: 85 },
 			{ name: 'Scikit-learn', proficient: false, level: 70 },
 			{ name: 'OpenCV', proficient: false, level: 65 },
-			{ name: 'Keras', proficient: false, level: 60 }
+			{ name: 'Keras', proficient: false, level: 60 },
+			{ name: 'Kivy', proficient: false, level: 45 }
 		]
 	},
 	{
@@ -40,7 +41,12 @@ export const skillGroups: SkillGroup[] = [
 			{ name: 'Vue.js', proficient: false, level: 68 },
 			{ name: 'Svelte', proficient: false, level: 65 },
 			{ name: 'Node.js', proficient: false, level: 75 },
-			{ name: 'Three.js', proficient: false, level: 60 }
+			{ name: 'Three.js', proficient: false, level: 60 },
+			{ name: 'HTML5', proficient: true, level: 85 },
+			{ name: 'CSS3 / SCSS', proficient: true, level: 82 },
+			{ name: 'jQuery', proficient: false, level: 55 },
+			{ name: 'Ionic', proficient: false, level: 50 },
+			{ name: 'JavaFX', proficient: false, level: 45 }
 		]
 	},
 	{

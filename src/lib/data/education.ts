@@ -15,7 +15,7 @@ export const education: Education[] = [
 		note: 'School of Computer Science, Pittsburgh, PA',
 		gpa: '4.07 / 4.00',
 		details: [
-			'Research: <a href="https://jykoh.com/vwa" target="_blank">VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks</a>',
+			'Research: <a href="https://jykoh.com/vwa" target="_blank" rel="noopener noreferrer">VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks</a>',
 			'15-642 Machine Learning Systems',
 			'10-617 Intermediate Deep Learning',
 			'10-715 Advanced Introduction to Machine Learning',

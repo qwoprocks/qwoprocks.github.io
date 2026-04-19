@@ -37,11 +37,11 @@
 		<SectionHeader num="01" title="About" />
 		<div class="about-text reveal reveal-d1" use:reveal>
 			<p>
-				I'm a Quantitative Developer at <a href="https://drw.com/" target="_blank">DRW</a> in
+				I'm a Quantitative Developer at <a href="https://drw.com/" target="_blank" rel="noopener noreferrer">DRW</a> in
 				Singapore. I graduated from
 				<a
 					href="https://www.ml.cmu.edu/academics/primary-ms-machine-learning-masters.html"
-					target="_blank">Carnegie Mellon University</a
+					target="_blank" rel="noopener noreferrer">Carnegie Mellon University</a
 				> with a Master's in Machine Learning.
 			</p>
 			<p>

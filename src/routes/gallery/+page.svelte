@@ -23,7 +23,10 @@
 	let filterKeys = $state<string[]>([]);
 	let filterStates = $state<Record<string, boolean>>({});
 
-	function pollForFilters() {
+	let pollTimer: ReturnType<typeof setTimeout> | null = null;
+	const POLL_MAX_RETRIES = 50; // 50 * 200ms = 10s max
+
+	function pollForFilters(retries = 0) {
 		const w = window as any;
 		if (w.__galleryFilters && w.__galleryToggleFilter) {
 			const filters: Record<string, FilterEntry> = w.__galleryFilters;
@@ -34,8 +37,8 @@
 			}
 			filterStates = states;
 			filtersReady = true;
-		} else {
-			setTimeout(pollForFilters, 200);
+		} else if (retries < POLL_MAX_RETRIES) {
+			pollTimer = setTimeout(() => pollForFilters(retries + 1), 200);
 		}
 	}
 
@@ -89,6 +92,9 @@
 
 	onMount(() => {
 		pollForFilters();
+		return () => {
+			if (pollTimer) clearTimeout(pollTimer);
+		};
 	});
 </script>
 
@@ -210,7 +216,7 @@
 						<div class="section-body-inner">
 							<ul class="references-list">
 								{#each activeItem.references as ref}
-									<li><a href={ref.url} target="_blank">{ref.label}</a></li>
+									<li><a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.label}</a></li>
 								{/each}
 							</ul>
 						</div>
