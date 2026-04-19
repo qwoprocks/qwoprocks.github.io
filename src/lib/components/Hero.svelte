@@ -27,6 +27,26 @@
 			><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" /></svg
 		>
 	</span>
+	<span class="sparkle" style="top:72%;right:8%">
+		<svg width="11" height="11" viewBox="0 0 24 24" stroke="var(--text-muted)"
+			><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" /></svg
+		>
+	</span>
+	<span class="sparkle" style="top:12%;left:22%">
+		<svg width="7" height="7" viewBox="0 0 24 24" stroke="var(--border-light)"
+			><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" /></svg
+		>
+	</span>
+	<span class="sparkle" style="bottom:18%;right:28%">
+		<svg width="14" height="14" viewBox="0 0 24 24" stroke="var(--accent)"
+			><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" /></svg
+		>
+	</span>
+	<span class="sparkle" style="top:44%;left:5%">
+		<svg width="9" height="9" viewBox="0 0 24 24" stroke="var(--text-muted)"
+			><path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" /></svg
+		>
+	</span>
 
 	<Aperture />
 
@@ -115,6 +135,22 @@
 
 	.sparkle:nth-child(5) :global(svg) {
 		animation-delay: 4.2s;
+	}
+
+	.sparkle:nth-child(6) :global(svg) {
+		animation-delay: 0.8s;
+	}
+
+	.sparkle:nth-child(7) :global(svg) {
+		animation-delay: 2.5s;
+	}
+
+	.sparkle:nth-child(8) :global(svg) {
+		animation-delay: 3.8s;
+	}
+
+	.sparkle:nth-child(9) :global(svg) {
+		animation-delay: 1.2s;
 	}
 
 	@keyframes sparkleFloat {

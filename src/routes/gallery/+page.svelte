@@ -3,7 +3,8 @@
 	import { galleryItems } from '$lib/data/gallery';
 	import { onMount } from 'svelte';
 
-	const item = galleryItems[0];
+	let activeId = $state(galleryItems[0].id);
+	const activeItem = $derived(galleryItems.find((i) => i.id === activeId)!);
 
 	let expandedSections = $state<Record<string, boolean>>({});
 
@@ -11,6 +12,7 @@
 		expandedSections = { ...expandedSections, [title]: !expandedSections[title] };
 	}
 
+	// --- Grass scene filter state ---
 	interface FilterEntry {
 		pass: { enabled: boolean };
 		enabled: boolean;
@@ -40,7 +42,6 @@
 	function toggleFilter(key: string) {
 		const newState = !filterStates[key];
 		const w = window as any;
-		// Disable all others first — at most one filter active at a time
 		if (newState) {
 			for (const k of filterKeys) {
 				if (k !== key && filterStates[k]) {
@@ -61,6 +62,31 @@
 		return key;
 	}
 
+	// --- Maze script loading ---
+	let mazeScriptLoaded = $state(false);
+	let mazeScriptEl: HTMLScriptElement | null = null;
+
+	function loadMazeScript() {
+		if (mazeScriptLoaded || !activeItem.scriptSrc) return;
+		// Wait a tick for the .maze-container to render
+		setTimeout(() => {
+			mazeScriptEl = document.createElement('script');
+			mazeScriptEl.src = activeItem.scriptSrc!;
+			mazeScriptEl.onload = () => {
+				mazeScriptLoaded = true;
+			};
+			document.body.appendChild(mazeScriptEl);
+		}, 0);
+	}
+
+	function selectItem(id: string) {
+		activeId = id;
+		expandedSections = {};
+		if (id === 'maze-generator' && !mazeScriptLoaded) {
+			loadMazeScript();
+		}
+	}
+
 	onMount(() => {
 		pollForFilters();
 	});
@@ -68,105 +94,218 @@
 
 <svelte:head>
 	<title>Gallery | Ming Chong Lim</title>
-	<!-- Load the Three.js scene directly via head script.
-	     Since gallery links use data-sveltekit-reload, this is always a fresh page load,
-	     so window.onload in main.js fires normally. -->
 	<script type="module" src="/js/grass/main.js"></script>
-	<!-- Global rule: when canvas is appended by main.js it covers the placeholder -->
 	<style>
 		.wrapper section canvas {
 			position: relative;
 			z-index: 1;
 		}
+		/* Ensure source code button sits above the canvas */
+		.sourceCodeButton {
+			position: relative;
+			z-index: 2;
+		}
 	</style>
 </svelte:head>
 
-<!-- .wrapper > section structure required by /js/grass/main.js (line 1382) -->
-<div class="wrapper">
-	<section>
-		<!-- Placeholder reserving space until main.js injects the canvas -->
-		<div class="canvas-placeholder">
-			<div class="placeholder-pulse"></div>
-			<span class="placeholder-label">Loading scene...</span>
-		</div>
-	</section>
-</div>
-
-{#if filtersReady}
-<div class="wrapper">
-	<div class="filter-bar">
-		Filters: 
-		{#each filterKeys as key}
+<div class="gallery-layout">
+	<!-- Sidebar / Tab bar -->
+	<nav class="gallery-sidebar" aria-label="Gallery experiments">
+		{#each galleryItems as item}
 			<button
-				class="filter-btn"
-				class:active={filterStates[key]}
-				onclick={() => toggleFilter(key)}
+				class="sidebar-item"
+				class:active={activeId === item.id}
+				onclick={() => selectItem(item.id)}
 			>
-				{getFilterName(key)}
+				<span class="sidebar-title">{item.title}</span>
+				<span class="sidebar-date">{item.date}</span>
 			</button>
 		{/each}
-	</div>
-</div>
-{/if}
+	</nav>
 
-<div class="container writeup-container">
-	<div class="writeup-header">
-		<h1>{item.title}</h1>
-		<div class="writeup-meta">
-			<span class="writeup-date">{item.date}</span>
-			<div class="writeup-tags">
-				{#each item.tags as tag}
-					<span class="tag">{tag}</span>
-				{/each}
+	<!-- Main content -->
+	<div class="gallery-main">
+		<!-- Grass scene -->
+		<div class="experiment-panel" class:hidden={activeId !== 'grass-scene'}>
+			<div class="wrapper">
+				<section>
+					<div class="canvas-placeholder">
+						<div class="placeholder-pulse"></div>
+						<span class="placeholder-label">Loading scene...</span>
+					</div>
+				</section>
 			</div>
-		</div>
-		<p class="writeup-desc">{item.description}</p>
-	</div>
 
-	{#each item.sections as section}
-		<div class="writeup-section">
-			<button
-				class="section-toggle"
-				onclick={() => toggleSection(section.title)}
-				aria-expanded={expandedSections[section.title] ?? false}
-			>
-				<h2>{section.title}</h2>
-				<span class="toggle-icon" class:expanded={expandedSections[section.title]}>+</span>
-			</button>
-			<div class="section-body" class:expanded={expandedSections[section.title]}>
-				<div class="section-body-inner">
-					{@html section.content}
-				</div>
-			</div>
-		</div>
-	{/each}
-
-	{#if item.references.length > 0}
-		<div class="writeup-section">
-			<button
-				class="section-toggle"
-				onclick={() => toggleSection('references')}
-				aria-expanded={expandedSections['references'] ?? false}
-			>
-				<h2>References</h2>
-				<span class="toggle-icon" class:expanded={expandedSections['references']}>+</span>
-			</button>
-			<div class="section-body" class:expanded={expandedSections['references']}>
-				<div class="section-body-inner">
-					<ul class="references-list">
-						{#each item.references as ref}
-							<li><a href={ref.url} target="_blank">{ref.label}</a></li>
+			{#if filtersReady && activeId === 'grass-scene'}
+				<div class="wrapper">
+					<div class="filter-bar">
+						Filters:
+						{#each filterKeys as key}
+							<button
+								class="filter-btn"
+								class:active={filterStates[key]}
+								onclick={() => toggleFilter(key)}
+							>
+								{getFilterName(key)}
+							</button>
 						{/each}
-					</ul>
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Maze generator -->
+		<div class="experiment-panel" class:hidden={activeId !== 'maze-generator'}>
+			<div class="wrapper">
+				<div class="maze-section">
+					<div class="maze-container"></div>
 				</div>
 			</div>
 		</div>
-	{/if}
 
-	<Footer />
+		<!-- Writeup for active item -->
+		<div class="container writeup-container">
+			<div class="writeup-header">
+				<h1>{activeItem.title}</h1>
+				<div class="writeup-meta">
+					<span class="writeup-date">{activeItem.date}</span>
+					<div class="writeup-tags">
+						{#each activeItem.tags as tag}
+							<span class="tag">{tag}</span>
+						{/each}
+					</div>
+				</div>
+				<p class="writeup-desc">{activeItem.description}</p>
+			</div>
+
+			{#each activeItem.sections as section}
+				<div class="writeup-section">
+					<button
+						class="section-toggle"
+						onclick={() => toggleSection(section.title)}
+						aria-expanded={expandedSections[section.title] ?? false}
+					>
+						<h2>{section.title}</h2>
+						<span class="toggle-icon" class:expanded={expandedSections[section.title]}>+</span>
+					</button>
+					<div class="section-body" class:expanded={expandedSections[section.title]}>
+						<div class="section-body-inner">
+							{@html section.content}
+						</div>
+					</div>
+				</div>
+			{/each}
+
+			{#if activeItem.references.length > 0}
+				<div class="writeup-section">
+					<button
+						class="section-toggle"
+						onclick={() => toggleSection('references')}
+						aria-expanded={expandedSections['references'] ?? false}
+					>
+						<h2>References</h2>
+						<span class="toggle-icon" class:expanded={expandedSections['references']}>+</span>
+					</button>
+					<div class="section-body" class:expanded={expandedSections['references']}>
+						<div class="section-body-inner">
+							<ul class="references-list">
+								{#each activeItem.references as ref}
+									<li><a href={ref.url} target="_blank">{ref.label}</a></li>
+								{/each}
+							</ul>
+						</div>
+					</div>
+				</div>
+			{/if}
+
+			<Footer />
+		</div>
+	</div>
 </div>
 
 <style>
+	/* ===== Gallery layout ===== */
+	.gallery-layout {
+		display: flex;
+		min-height: 100vh;
+	}
+
+	/* ===== Sidebar ===== */
+	.gallery-sidebar {
+		width: 180px;
+		flex-shrink: 0;
+		padding: 80px 0 2rem;
+		border-right: 1px solid var(--border);
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		overflow-y: auto;
+		transition: var(--theme-transition);
+	}
+
+	.sidebar-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding: 0.8rem 1rem;
+		border: none;
+		border-left: 2px solid transparent;
+		background: none;
+		cursor: pointer;
+		text-align: left;
+		transition: border-color 0.3s, background 0.3s, color 0.3s;
+	}
+
+	.sidebar-item:hover {
+		background: var(--accent-dim);
+	}
+
+	.sidebar-item.active {
+		border-left-color: var(--accent);
+		background: var(--accent-dim);
+	}
+
+	.sidebar-title {
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.04em;
+		color: var(--text-muted);
+		transition: color 0.3s;
+	}
+
+	.sidebar-item.active .sidebar-title {
+		color: var(--accent);
+	}
+
+	.sidebar-item:hover .sidebar-title {
+		color: var(--text);
+	}
+
+	.sidebar-date {
+		font-family: var(--font-mono);
+		font-size: 0.45rem;
+		letter-spacing: 0.06em;
+		color: var(--text-muted);
+		opacity: 0.6;
+	}
+
+	/* ===== Main content ===== */
+	.gallery-main {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.experiment-panel {
+		transition: opacity 0.3s;
+	}
+
+	.experiment-panel.hidden {
+		display: none;
+	}
+
 	.wrapper {
 		max-width: 960px;
 		margin: 0 auto;
@@ -180,7 +319,14 @@
 		aspect-ratio: 4 / 3;
 	}
 
-	/* Placeholder while canvas loads — sits behind the canvas via z-index */
+	/* Maze section — no aspect ratio, just hosts the container */
+	.maze-section {
+		margin-top: 80px;
+		display: flex;
+		justify-content: center;
+	}
+
+	/* Placeholder while canvas loads */
 	.canvas-placeholder {
 		position: absolute;
 		inset: 0;
@@ -254,7 +400,7 @@
 		background: var(--accent-dim);
 	}
 
-	/* Canvas injected by main.js — covers the absolute-positioned placeholder via z-index */
+	/* Canvas injected by main.js */
 	section :global(canvas) {
 		width: 100% !important;
 		height: auto !important;
@@ -273,6 +419,8 @@
 		box-shadow: none;
 		-webkit-transform: translateZ(0);
 		transition: var(--theme-transition);
+		position: relative;
+		z-index: 2;
 	}
 
 	:global(.sourceCodeButton:hover) {
@@ -287,7 +435,6 @@
 		filter: var(--icon-invert, none);
 	}
 
-	/* Invert icon in dark mode */
 	:global([data-theme='dark'] .sourceCodeButton img) {
 		filter: invert(1) brightness(0.8);
 	}
@@ -398,7 +545,7 @@
 		color: var(--accent);
 	}
 
-	/* Expandable body — grid animation */
+	/* Expandable body */
 	.section-body {
 		display: grid;
 		grid-template-rows: 0fr;
@@ -486,7 +633,38 @@
 		border-color: var(--accent);
 	}
 
+	/* ===== Mobile: collapse sidebar to horizontal tabs ===== */
 	@media (max-width: 768px) {
+		.gallery-layout {
+			flex-direction: column;
+		}
+
+		.gallery-sidebar {
+			width: 100%;
+			height: auto;
+			position: relative;
+			flex-direction: row;
+			padding: 56px 0 0;
+			border-right: none;
+			border-bottom: 1px solid var(--border);
+			overflow-x: auto;
+			overflow-y: hidden;
+			gap: 0;
+		}
+
+		.sidebar-item {
+			border-left: none;
+			border-bottom: 2px solid transparent;
+			padding: 0.6rem 1rem;
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
+
+		.sidebar-item.active {
+			border-left-color: transparent;
+			border-bottom-color: var(--accent);
+		}
+
 		.wrapper {
 			padding: 0 1.5rem;
 		}

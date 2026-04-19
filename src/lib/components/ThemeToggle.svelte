@@ -8,8 +8,6 @@
 		const stored = localStorage.getItem('theme');
 		if (stored) {
 			theme = stored;
-		} else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-			theme = 'light';
 		}
 		document.documentElement.setAttribute('data-theme', theme);
 	});

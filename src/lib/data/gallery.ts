@@ -9,6 +9,7 @@ export interface GalleryItem {
 	description: string;
 	date: string;
 	tags: string[];
+	scriptSrc?: string;
 	sections: GalleryWriteupSection[];
 	references: { label: string; url: string }[];
 }
@@ -90,6 +91,37 @@ export const galleryItems: GalleryItem[] = [
 			{
 				label: 'Three.js MeshSurfaceSampler',
 				url: 'https://threejs.org/docs/#examples/en/math/MeshSurfaceSampler'
+			}
+		]
+	},
+	{
+		id: 'maze-generator',
+		title: 'Conway Maze Generator',
+		description:
+			'A maze generator based on a modified Conway\'s Game of Life ruleset. Draw an initial seed pattern or use the default, then watch the cellular automata evolve into a maze structure. Did this as part of the bonus section of a maze solving project during a undergraduate CS course.',
+		date: '2020',
+		tags: ['Cellular Automata', 'Canvas', 'Procedural Generation'],
+		scriptSrc: '/js/maze/maze.js',
+		sections: [
+			{
+				title: 'How It Works',
+				content:
+					'<p>The generator uses a modified Game of Life ruleset adapted from <a href="https://www.reddit.com/r/proceduralgeneration/comments/7v9jbj/" target="_blank">this Reddit post</a>. Starting from a small cross-shaped seed at the center, the automata evolves through several steps:</p><ol><li>Cells with 0 neighbours die (isolation)</li><li>Cells with 1-5 neighbours survive, with a special arch-breaking rule that prevents floating structures</li><li>Cells with exactly 4 neighbours trigger diagonal kills to create passages</li><li>Cells with more than 5 neighbours die (overcrowding)</li><li>Dead cells with exactly 2 neighbours are born</li></ol><p>After the simulation runs for <code>rows + cols - 30</code> steps, outer walls are built around the perimeter.</p>'
+			},
+			{
+				title: 'Implementation',
+				content:
+					'<p>The original was written in Java. This port runs entirely on a canvas element with requestAnimationFrame. The grid state is stored as a 2D boolean array. Each simulation step creates a fresh next-state array to avoid mutation artifacts during rule evaluation.</p><p>The draw mode lets you paint initial conditions before running the automata. The canvas handles both click and drag events, mapping mouse coordinates to grid cells. Three fixed grid sizes (20&times;20, 50&times;50, 100&times;100) are available — smaller grids produce thicker, simpler mazes while larger grids create more intricate structures.</p>'
+			}
+		],
+		references: [
+			{
+				label: "Reddit: Procedurally Generated Maze Based on Conway's Game of Life",
+				url: 'https://www.reddit.com/r/proceduralgeneration/comments/7v9jbj/'
+			},
+			{
+				label: "Conway's Game of Life (Wikipedia)",
+				url: 'https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'
 			}
 		]
 	}

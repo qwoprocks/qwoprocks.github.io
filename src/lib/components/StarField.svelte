@@ -35,17 +35,24 @@
 			active: boolean;
 		}
 
-		interface Cloud {
-			cx: number;
-			cy: number;
-			blobs: { ox: number; oy: number; rx: number; ry: number }[];
-			speed: number;
+		interface Kana {
+			x: number;
+			y: number;
+			vx: number;
+			vy: number;
+			char: string;
+			size: number;
 			alpha: number;
+			phase: number;
+			freq: number;
+			accent: boolean;
 		}
+
+		const HIRAGANA = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん';
 
 		let stars: Star[] = [];
 		let comets: Comet[] = [];
-		let clouds: Cloud[] = [];
+		let kana: Kana[] = [];
 		let nextCometTime = 6 + Math.random() * 12;
 
 		// --- Init ---
@@ -55,7 +62,7 @@
 			canvas.width = w;
 			canvas.height = h;
 			initStars();
-			initClouds();
+			initKana();
 		}
 
 		function initStars() {
@@ -78,26 +85,22 @@
 			}
 		}
 
-		function initClouds() {
-			clouds = [];
-			const count = 4 + Math.floor(Math.random() * 3); // 4-6 clouds
+		function initKana() {
+			kana = [];
+			const count = 35 + Math.floor(Math.random() * 15);
 			for (let i = 0; i < count; i++) {
-				const blobCount = 3 + Math.floor(Math.random() * 3);
-				const blobs = [];
-				for (let j = 0; j < blobCount; j++) {
-					blobs.push({
-						ox: (Math.random() - 0.5) * 80,
-						oy: (Math.random() - 0.5) * 25,
-						rx: 25 + Math.random() * 45,
-						ry: 12 + Math.random() * 20
-					});
-				}
-				clouds.push({
-					cx: Math.random() * w,
-					cy: 50 + Math.random() * (h - 120),
-					blobs,
-					speed: 4 + Math.random() * 8,
-					alpha: 0.15 + Math.random() * 0.15
+				const accent = Math.random() < 0.12;
+				kana.push({
+					x: Math.random() * w,
+					y: Math.random() * h,
+					vx: 0, // driven by Brownian motion in drawKana
+					vy: -(15 + Math.random() * 25), // px/s upward
+					char: HIRAGANA[Math.floor(Math.random() * HIRAGANA.length)],
+					size: 12 + Math.random() * 20,
+					alpha: accent ? 0.45 + Math.random() * 0.25 : 0.18 + Math.random() * 0.22,
+					phase: Math.random() * Math.PI * 2,
+					freq: 1 + Math.random() * 2, // Hz for Brownian wobble
+					accent
 				});
 			}
 		}
@@ -244,37 +247,56 @@
 			}
 		}
 
-		// --- Clouds (light mode) — abstract ellipse outlines ---
-		function drawClouds(t: number) {
-			const strokeColor =
-				getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() ||
-				'#9a9590';
+		// --- Kana (light mode) — drifting hiragana characters ---
+		function drawKana(t: number, dt: number) {
+			const styles = getComputedStyle(document.documentElement);
+			const dimColor = styles.getPropertyValue('--text-dim').trim() || '#6a6560';
+			const accentColor = styles.getPropertyValue('--accent').trim() || '#d03030';
 
-			for (const cloud of clouds) {
-				const offsetX = (cloud.speed * t) % (w + 200) - 100;
-				const cx = ((cloud.cx + offsetX) % (w + 200)) - 100;
+			// vx damping: 0.95/frame at 60fps → per-second decay constant
+			const VX_DECAY_RATE = -Math.log(0.95) * 60;
+
+			for (const k of kana) {
+				// Smooth sine wander (deterministic, per-symbol via unique phase/freq)
+				const wanderX = Math.sin(t * k.freq + k.phase) * 12;
+
+				// Brownian impulse: scale by sqrt(dt) for frame-rate independent diffusion
+				// Each symbol gets its own Math.random() call — uncorrelated per symbol
+				k.vx += (Math.random() - 0.5) * 60 * Math.sqrt(dt);
+				// Frame-rate independent damping
+				k.vx *= Math.exp(-VX_DECAY_RATE * dt);
+
+				k.x += (k.vx + wanderX * 0.3) * dt;
+				k.y += k.vy * dt;
+
+				// Wrap
+				if (k.y < -k.size) { k.y = h + k.size; k.x = Math.random() * w; }
+				if (k.x < -k.size * 2) k.x = w + k.size;
+				if (k.x > w + k.size * 2) k.x = -k.size;
+
+				const osc = Math.sin(t * 0.8 + k.phase) * 0.15 + 0.85;
+				const alpha = k.alpha * osc;
 
 				ctx.save();
-				ctx.strokeStyle = strokeColor;
-				ctx.lineWidth = 1;
-				ctx.globalAlpha = cloud.alpha;
-				for (const blob of cloud.blobs) {
-					const bx = cx + blob.ox;
-					const by = cloud.cy + blob.oy + Math.sin(t * 0.3 + blob.ox) * 3;
-					ctx.beginPath();
-					ctx.ellipse(bx, by, blob.rx, blob.ry, 0, 0, Math.PI * 2);
-					ctx.stroke();
-				}
+				ctx.globalAlpha = alpha;
+				ctx.font = `300 ${k.size}px 'Space Grotesk', sans-serif`;
+				ctx.fillStyle = k.accent ? accentColor : dimColor;
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'middle';
+				ctx.fillText(k.char, k.x, k.y);
 				ctx.restore();
 			}
 		}
 
 		// --- Main loop ---
+		let lastFrameTime = 0;
 		function draw(timestamp: number) {
 			const t = timestamp / 1000;
+			const dt = lastFrameTime ? Math.min((timestamp - lastFrameTime) / 1000, 0.05) : 0.016;
+			lastFrameTime = timestamp;
 			ctx.clearRect(0, 0, w, h);
 
-			decayVelocity();
+			decayVelocity(dt);
 			const theme = getTheme();
 			if (theme === 'dark') {
 				drawStars(t);
@@ -284,7 +306,7 @@
 				}
 				drawComets(t);
 			} else {
-				drawClouds(t);
+				drawKana(t, dt);
 			}
 
 			animId = requestAnimationFrame(draw);
@@ -302,9 +324,11 @@
 			lastScrollTime = now;
 		}
 
-		// Decay scroll velocity each frame so effect fades when scrolling stops
-		function decayVelocity() {
-			scrollVelocity *= 0.92; // smooth exponential decay
+		// Decay scroll velocity — frame-rate independent exponential decay
+		// 0.92 per frame at 60fps → half-life ≈ 0.2s
+		const SCROLL_DECAY_RATE = -Math.log(0.92) * 60; // per-second decay constant
+		function decayVelocity(dt: number) {
+			scrollVelocity *= Math.exp(-SCROLL_DECAY_RATE * dt);
 			if (Math.abs(scrollVelocity) < 1) scrollVelocity = 0;
 		}
 
