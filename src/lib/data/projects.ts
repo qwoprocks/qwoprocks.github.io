@@ -12,10 +12,10 @@ export interface Project {
 
 export const projects: Project[] = [
 	{
-		title: 'Manga Text Representation',
+		title: 'Manga Text Generation',
 		type: 'Research',
 		description:
-			'Improving image representations of multilingual text for manga understanding and region-specific color transfer.',
+			'Improving the clarity of text in generated manga images through region-specific loss minimisation.',
 		image: '/img/manga_logo.png',
 		link: 'https://seahhorse.github.io/projects/improving_image_representations_of_words_through_region-specific_loss_minimisation/',
 		tags: ['Python', 'PyTorch', 'NLP', 'Computer Vision'],
