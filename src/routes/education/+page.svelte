@@ -1,100 +1,159 @@
+<script lang="ts">
+	import SectionHeader from '$lib/components/SectionHeader.svelte';
+	import ShutterLine from '$lib/components/ShutterLine.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import { reveal } from '$lib/actions/reveal';
+	import { education } from '$lib/data/education';
+</script>
+
 <svelte:head>
 	<title>Education | Ming Chong Lim</title>
 </svelte:head>
 
-<h1>Carnegie Mellon University</h1>
+<div class="container detail-page">
+	<section class="section">
+		<ShutterLine />
+		<SectionHeader num="03" title="Education" />
 
-<h2>Master's in Machine Learning</h2>
+		{#each education as edu, i}
+			<div class="edu-row reveal" use:reveal>
+				<div class="edu-year">{edu.period}</div>
+				<div class="edu-divider"></div>
+				<div class="edu-info">
+					<h3>{edu.school}</h3>
+					<div class="degree">{edu.degree}</div>
+					{#if edu.gpa}
+						<div class="gpa">GPA: {edu.gpa}</div>
+					{/if}
+					<div class="note">{edu.note}</div>
+					<ul class="edu-details">
+						{#each edu.details as detail}
+							<li>{@html detail}</li>
+						{/each}
+					</ul>
+				</div>
+			</div>
+		{/each}
+	</section>
 
-<h3>Aug 2024 - Aug 2025</h3>
+	<Footer />
+</div>
 
-<ul>
-	<li><strong>GPA: 4.07 / 4.00</strong></li>
-	<li>
-		Research:
-		<ul>
-			<li>
-				<a href="https://jykoh.com/vwa" target="_blank"
-					>VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks</a
-				>
-			</li>
-		</ul>
-	</li>
-	<li>
-		Relevant modules:
-		<ul>
-			<li>15-642 Machine Learning Systems</li>
-			<li>10-617 Intermediate Deep Learning</li>
-			<li>10-715 Advanced Introduction to Machine Learning</li>
-			<li>10-718 Machine Learning in Practice</li>
-			<li>16-726 Learning-Based Image Synthesis</li>
-			<li>16-720 Computer Vision</li>
-			<li>36-705 Intermediate Statistics</li>
-			<li>10-725 Convex Optimization</li>
-			<li>10-708 Probabilistic Graphical Models</li>
-		</ul>
-	</li>
-</ul>
+<style>
+	.detail-page {
+		padding-top: 80px;
+	}
 
-<h1>National University of Singapore</h1>
+	.edu-row {
+		display: grid;
+		grid-template-columns: 100px 1px 1fr;
+		gap: 1.5rem;
+		padding: 1.5rem 0;
+		align-items: start;
+		transition: var(--theme-transition);
+	}
 
-<h2>Bachelor of Computing in Computer Science with Honours</h2>
+	.edu-row + .edu-row {
+		border-top: 1px solid var(--border);
+	}
 
-<h3>Aug 2019 - May 2023</h3>
+	.edu-year {
+		font-size: 0.68rem;
+		color: var(--text-muted);
+		text-align: right;
+		padding-top: 0.15rem;
+	}
 
-<ul>
-	<li><strong>GPA: 4.88 / 5.00 (3.92 / 4.00)</strong></li>
-	<li>Artificial Intelligence Focus Area (Distinction)</li>
-	<li>
-		Dean's list for:
-		<ul>
-			<li>AY2021/2022 Semester 1</li>
-			<li>AY2020/2021 Semester 1</li>
-		</ul>
-	</li>
-	<li>
-		Top student for:
-		<ul>
-			<li>CS4243 Computer Vision and Pattern Recognition among 156 students</li>
-			<li>CS2106 Introduction to Operating Systems among 403 students</li>
-			<li>CS2103T Software Engineering among 338 students</li>
-		</ul>
-	</li>
-	<li>
-		Relevant modules:
-		<ul>
-			<li>CS4243 Computer Vision and Pattern Recognition (A+)</li>
-			<li>CS3241 Computer Graphics (A)</li>
-			<li>CS4248 Natural Language Processing (A-)</li>
-			<li>CS3243 Introduction to Artificial Intelligence (A-)</li>
-			<li>CS2106 Introduction to Operating Systems (A+)</li>
-			<li>CS3230 Design and Analysis of Algorithms (A)</li>
-			<li>CS2040S Data Structures and Algorithms (A+)</li>
-			<li>CS2103T Software Engineering (A+)</li>
-			<li>CS2100 Computer Organisation (A+)</li>
-			<li>CS2030 Programming Methodology II (A+)</li>
-			<li>CS1231S Discrete Structures (A+)</li>
-			<li>MA1101R Linear Algebra I (A+)</li>
-		</ul>
-	</li>
-</ul>
+	.edu-divider {
+		width: 1px;
+		height: 100%;
+		background: var(--border-light);
+		min-height: 40px;
+		transition: background 0.5s;
+	}
 
-<h1>The University of British Columbia</h1>
+	.edu-info h3 {
+		font-family: var(--font-head);
+		font-weight: 500;
+		font-size: 1rem;
+		color: var(--heading);
+		margin-bottom: 0.1rem;
+		transition: color 0.5s;
+	}
 
-<h2>Student Exchange Programme</h2>
+	.degree {
+		font-size: 0.8rem;
+		color: var(--accent);
+		font-weight: 400;
+		margin-bottom: 0.2rem;
+		font-family: var(--font-head);
+		transition: color 0.5s;
+	}
 
-<h3>Jan 2022 - May 2022</h3>
+	.gpa {
+		font-size: 0.72rem;
+		color: var(--heading);
+		font-weight: 500;
+		margin-bottom: 0.2rem;
+		transition: color 0.5s;
+	}
 
-<ul>
-	<li><strong>GPA: 4.20 / 4.00</strong></li>
-	<li>
-		Relevant modules:
-		<ul>
-			<li>CPSC 340 Machine Learning and Data Mining (A+)</li>
-			<li>STAT 305 Introduction to Statistical Inference (A+)</li>
-		</ul>
-	</li>
-	<li>
-		Participated in sporting clubs such as the rock climbing club and the varsity outdoor club
-	</li>
-</ul>
+	.note {
+		font-size: 0.72rem;
+		color: var(--text-dim);
+		transition: color 0.5s;
+	}
+
+	.edu-details {
+		list-style: none;
+		margin-top: 0.8rem;
+		padding: 0;
+	}
+
+	.edu-details li {
+		font-size: 0.72rem;
+		color: var(--text-dim);
+		line-height: 1.7;
+		padding: 0.1rem 0;
+		padding-left: 1rem;
+		position: relative;
+		transition: color 0.5s;
+	}
+
+	.edu-details li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.5rem;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: var(--border-light);
+	}
+
+	.edu-details :global(a) {
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid var(--accent-soft);
+		transition: border-color 0.3s, color 0.5s;
+	}
+
+	.edu-details :global(a:hover) {
+		border-color: var(--accent);
+	}
+
+	@media (max-width: 768px) {
+		.edu-row {
+			grid-template-columns: 1fr;
+			gap: 0.5rem;
+		}
+
+		.edu-year {
+			text-align: left;
+		}
+
+		.edu-divider {
+			display: none;
+		}
+	}
+</style>

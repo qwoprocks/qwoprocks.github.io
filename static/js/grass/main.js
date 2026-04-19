@@ -170,7 +170,119 @@ const getNoiseFragmentShader = () => {
   `;
 }
 
-const getKuwaharaPass = (radius, display_width, display_height) => { 
+const getSpreadPass = (display_width, display_height) => {
+  const spreadPass = new ShaderPass({
+    name: 'Spread',
+    uniforms: {
+      'tDiffuse': { value: null },
+      'uResolution': { value: new THREE.Vector2(display_width, display_height) },
+      'uRadius': { value: 5.0 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform sampler2D tDiffuse;
+      uniform vec2 uResolution;
+      uniform float uRadius;
+      varying vec2 vUv;
+
+      // Hash function for pseudo-random offset per pixel
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+      }
+      vec2 hash2(vec2 p) {
+        return vec2(hash(p), hash(p + vec2(37.0, 91.0)));
+      }
+
+      void main() {
+        vec2 pixel = vUv * uResolution;
+        // Random offset within radius for this pixel
+        vec2 rand = hash2(floor(pixel)) * 2.0 - 1.0; // range [-1, 1]
+        vec2 offset = rand * uRadius / uResolution;
+        vec2 sampleUv = clamp(vUv + offset, 0.0, 1.0);
+        gl_FragColor = texture2D(tDiffuse, sampleUv);
+      }`
+  });
+  return spreadPass;
+};
+
+const getPixelatePass = (display_width, display_height) => {
+  const pixelatePass = new ShaderPass({
+    name: 'Pixelate',
+    uniforms: {
+      'tDiffuse': { value: null },
+      'uResolution': { value: new THREE.Vector2(display_width, display_height) },
+      'uPixelSize': { value: 8.0 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform sampler2D tDiffuse;
+      uniform vec2 uResolution;
+      uniform float uPixelSize;
+      varying vec2 vUv;
+      void main() {
+        vec2 pixel = vUv * uResolution;
+        vec2 snapped = floor(pixel / uPixelSize) * uPixelSize + uPixelSize * 0.5;
+        vec2 snappedUv = snapped / uResolution;
+        gl_FragColor = texture2D(tDiffuse, snappedUv);
+      }`
+  });
+  return pixelatePass;
+};
+
+const getEdgeDetectionPass = (display_width, display_height) => {
+  const edgePass = new ShaderPass({
+    name: 'EdgeDetection',
+    uniforms: {
+      'tDiffuse': { value: null },
+      'uResolution': { value: new THREE.Vector2(display_width, display_height) },
+      'uBlend': { value: 0.5 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform sampler2D tDiffuse;
+      uniform vec2 uResolution;
+      uniform float uBlend;
+      varying vec2 vUv;
+      float luma(vec3 c) {
+        return dot(c, vec3(0.299, 0.587, 0.114));
+      }
+      void main() {
+        vec2 texel = 1.0 / uResolution;
+        float tl = luma(texture2D(tDiffuse, vUv + vec2(-texel.x, texel.y)).rgb);
+        float tm = luma(texture2D(tDiffuse, vUv + vec2(0.0, texel.y)).rgb);
+        float tr = luma(texture2D(tDiffuse, vUv + vec2(texel.x, texel.y)).rgb);
+        float ml = luma(texture2D(tDiffuse, vUv + vec2(-texel.x, 0.0)).rgb);
+        float mr = luma(texture2D(tDiffuse, vUv + vec2(texel.x, 0.0)).rgb);
+        float bl = luma(texture2D(tDiffuse, vUv + vec2(-texel.x, -texel.y)).rgb);
+        float bm = luma(texture2D(tDiffuse, vUv + vec2(0.0, -texel.y)).rgb);
+        float br = luma(texture2D(tDiffuse, vUv + vec2(texel.x, -texel.y)).rgb);
+        float gx = -tl - 2.0*ml - bl + tr + 2.0*mr + br;
+        float gy = -tl - 2.0*tm - tr + bl + 2.0*bm + br;
+        float edge = sqrt(gx*gx + gy*gy);
+        vec4 original = texture2D(tDiffuse, vUv);
+        vec3 edgeColor = vec3(1.0 - edge);
+        gl_FragColor = vec4(mix(original.rgb, edgeColor, uBlend), 1.0);
+      }`
+  });
+  return edgePass;
+};
+
+const getKuwaharaPass = (radius, display_width, display_height) => {
   const kuwaharaPass = new ShaderPass(
     {
       name: 'Kuwahara',
@@ -1448,10 +1560,36 @@ window.onload = () => {
 
   const renderPass = new RenderPass(SCENE, CAMERA);
   const kuwaharaPass = getKuwaharaPass(4, WIDTH, HEIGHT);
+  const spreadPass = getSpreadPass(WIDTH, HEIGHT);
+  const pixelatePass = getPixelatePass(WIDTH, HEIGHT);
+  const edgeDetectionPass = getEdgeDetectionPass(WIDTH, HEIGHT);
+
+  // All filter passes start disabled
+  kuwaharaPass.enabled = false;
+  spreadPass.enabled = false;
+  pixelatePass.enabled = false;
+  edgeDetectionPass.enabled = false;
 
   const composer = new EffectComposer(RENDERER);
   composer.addPass(renderPass);
-  // composer.addPass(kuwaharaPass);
+  composer.addPass(kuwaharaPass);
+  composer.addPass(spreadPass);
+  composer.addPass(pixelatePass);
+  composer.addPass(edgeDetectionPass);
+
+  // Expose global API for filter toggling from the gallery page
+  window.__galleryFilters = {
+    kuwahara: { pass: kuwaharaPass, enabled: false, name: 'Kuwahara' },
+    spread: { pass: spreadPass, enabled: false, name: 'Spread' },
+    pixelate: { pass: pixelatePass, enabled: false, name: 'Pixelate' },
+    edgeDetection: { pass: edgeDetectionPass, enabled: false, name: 'Edge Detect' },
+  };
+  window.__galleryToggleFilter = (name, enabled) => {
+    const filter = window.__galleryFilters[name];
+    if (!filter) return;
+    filter.enabled = enabled;
+    filter.pass.enabled = enabled;
+  };
 
   const resizeObserver = new ResizeObserver((entries) => {
     if (entries.length !== 1) {

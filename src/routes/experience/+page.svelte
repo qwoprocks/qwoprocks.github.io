@@ -1,117 +1,93 @@
+<script lang="ts">
+	import SectionHeader from '$lib/components/SectionHeader.svelte';
+	import ShutterLine from '$lib/components/ShutterLine.svelte';
+	import TimelineItem from '$lib/components/TimelineItem.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import { reveal } from '$lib/actions/reveal';
+	import { experiences } from '$lib/data/experiences';
+</script>
+
 <svelte:head>
-	<title>Work Experience | Ming Chong Lim</title>
+	<title>Experience | Ming Chong Lim</title>
 </svelte:head>
 
-<h1>DRW</h1>
+<div class="container detail-page">
+	<section class="section">
+		<ShutterLine />
+		<SectionHeader num="02" title="Experience" />
 
-<h2>Quantitative Developer Intern</h2>
+		<div class="timeline reveal reveal-d1" use:reveal>
+			{#each experiences as exp}
+				<div class="tl-item-full">
+					<TimelineItem experience={exp} showDesc={false} />
+					<ul class="tl-bullets">
+						{#each exp.bullets as bullet}
+							<li>{bullet}</li>
+						{/each}
+					</ul>
+				</div>
+			{/each}
+		</div>
+	</section>
 
-<h3>May 2024 - Aug 2024</h3>
+	<Footer />
+</div>
 
-<ul>
-	<li>
-		Parallelized and refactored several parts of a Python code base used to support Quantitative
-		Researchers, increasing scalability and reducing latency by 30%
-	</li>
-	<li>Found and fixed a high-latency-impact, low-reproducibility bug that occurred in production</li>
-	<li>
-		Developed a framework for regression testing and reproducing production bugs in a semi-realistic
-		setting
-	</li>
-	<li>
-		Supported other team's C++ operations, and wrote small scripts to automate processes
-	</li>
-</ul>
+<style>
+	.detail-page {
+		padding-top: 80px;
+	}
 
-<h1 id="teaching-assistant-2">Carnegie Mellon University</h1>
+	.timeline {
+		position: relative;
+		padding-left: 2rem;
+	}
 
-<h2>Teaching Assistant</h2>
+	.timeline::before {
+		content: '';
+		position: absolute;
+		left: 4px;
+		top: 8px;
+		bottom: 8px;
+		width: 1px;
+		background: linear-gradient(to bottom, var(--border-light), var(--border), transparent);
+		transition: background 0.5s;
+	}
 
-<h3>Jan 2024 - May 2024</h3>
+	.tl-bullets {
+		padding-left: 3.5rem;
+		margin-bottom: 1.5rem;
+		list-style: none;
+	}
 
-<p>Taught 10-725 Convex Optimization</p>
-<ul>
-	<li>Hosted weekly Office Hours for a cohort of 80 students</li>
-	<li>Created exam and homework questions for the course</li>
-	<li>Graded homework assignments and gave personalized feedback on mistakes made</li>
-</ul>
+	.tl-bullets li {
+		font-size: 0.75rem;
+		color: var(--text-dim);
+		line-height: 1.7;
+		padding: 0.15rem 0;
+		position: relative;
+		padding-left: 1rem;
+		transition: color 0.5s;
+	}
 
-<h1>Defence Science and Technology Agency</h1>
+	.tl-bullets li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.55rem;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: var(--border-light);
+	}
 
-<h2>Software Engineer Intern (C++)</h2>
+	@media (max-width: 480px) {
+		.timeline {
+			padding-left: 1.5rem;
+		}
 
-<h3>Jan 2023 - Jun 2023</h3>
-
-<ul>
-	<li>
-		Improve in-house computer vision algorithms for robust detection and locating of drones in
-		various environments
-	</li>
-	<li>
-		Modify open-source code to fit client use cases, integrating it with various drone hardware and
-		the existing code base
-	</li>
-	<li>Work on improving UI/UX for current user-facing software</li>
-	<li>
-		Develop drone algorithms for drone-vs-drone purposes (taking down another drone using a drone)
-	</li>
-	<li>Conduct on-the-ground experiments to determine the efficacy of different approaches</li>
-</ul>
-
-<h1>Samsung</h1>
-
-<h2>Machine Learning Intern</h2>
-
-<h3>Jun 2022 - Aug 2022</h3>
-
-<ul>
-	<li>Developed a containerized desktop and web based visualization software</li>
-	<li>
-		Integrated various image and voice Deepfake detection models into the software, visualizing
-		their gradient-weighted class activation mapping, enhancing the explainability of the team's
-		artificial intelligence products
-	</li>
-	<li>
-		Provided technical input on which direction the team should head in and how to improve their
-		current solutions, which helped shape the team's decisions
-	</li>
-</ul>
-
-<h1>Defence Science and Technology Agency</h1>
-
-<h2>Machine Learning Intern</h2>
-
-<h3>Jun 2021 - Aug 2021</h3>
-
-<ul>
-	<li>
-		Thoroughly tested several state-of-the-art Automatic Speech Recognition (ASR) models to verify
-		their suitability for deployment
-	</li>
-	<li>
-		Implemented a containerized end-to-end ASR pipeline with detailed documentation, allowing users
-		to easily utilize the pipeline for their needs
-	</li>
-	<li>
-		Deployed the completed pipeline to distributed systems using ClearML, enabling fast distributed
-		training on large internal datasets
-	</li>
-</ul>
-
-<h1 id="teaching-assistant-1">National University of Singapore</h1>
-
-<h2>Teaching Assistant</h2>
-
-<h3>Jan 2020 - Present</h3>
-
-<p>Taught the following modules:</p>
-<ul>
-	<li>CS2109S Introduction to AI and Machine Learning</li>
-	<li>CS3241 Computer Graphics</li>
-	<li>CS2106 Introduction to Operating Systems</li>
-	<li>CS2040S Data Structures and Algorithms</li>
-	<li>CS2103T Software Engineering</li>
-	<li>CS2030 Programming Methodology II</li>
-</ul>
-
-<p>Nominated for teaching awards by 9 students</p>
+		.tl-bullets {
+			padding-left: 1.5rem;
+		}
+	}
+</style>
