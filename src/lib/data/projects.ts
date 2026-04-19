@@ -15,7 +15,7 @@ export const projects: Project[] = [
 		title: 'Manga Text Generation',
 		type: 'Research',
 		description:
-			'Improving the clarity of text in generated manga images through region-specific loss minimisation.',
+			'Improving the clarity of text in generated manga images through region-specific loss minimisation',
 		image: '/img/manga_logo.png',
 		link: 'https://seahhorse.github.io/projects/improving_image_representations_of_words_through_region-specific_loss_minimisation/',
 		tags: ['Python', 'PyTorch', 'NLP', 'Computer Vision'],
@@ -24,9 +24,9 @@ export const projects: Project[] = [
 	},
 	{
 		title: 'Sketch2Image',
-		type: 'Research',
+		type: 'Project',
 		description:
-			'Image synthesis from freehand sketches using deep generative models and latent variable manipulation.',
+			'Image synthesis from freehand sketches using deep generative models and latent variable manipulation',
 		image: '/img/imgsyn_proj5_logo.png',
 		link: 'https://www.andrew.cmu.edu/course/16-726-sp24/projects/mingchol/proj5/',
 		tags: ['Python', 'GANs', 'Image Synthesis'],
@@ -35,9 +35,9 @@ export const projects: Project[] = [
 	},
 	{
 		title: 'Neural Style Transfer',
-		type: 'Research',
+		type: 'Project',
 		description:
-			'Artistic style transfer using neural networks for texture synthesis and real-time image transformation.',
+			'Artistic style transfer using neural networks for texture synthesis and real-time image transformation',
 		image: '/img/imgsyn_proj4_logo.png',
 		link: 'https://www.andrew.cmu.edu/course/16-726-sp24/projects/mingchol/proj4/',
 		tags: ['Deep Learning', 'Style Transfer'],
@@ -49,7 +49,7 @@ export const projects: Project[] = [
 		title: 'RouteMaker',
 		type: 'Application',
 		description:
-			'A cross-platform application utilizing machine learning to allow users to quickly create climbing routes and share them with the community.',
+			'A cross-platform application utilizing machine learning to allow users to quickly create climbing routes and share them with the community',
 		image: '/img/routemaker_logo.jpg',
 		link: 'https://github.com/nandium/RouteMaker',
 		tags: ['Mobile', 'ML', 'Cross-platform'],
@@ -60,7 +60,7 @@ export const projects: Project[] = [
 		title: 'Travelling BusinessMan',
 		type: 'Application',
 		description:
-			'A brownfield project done in Java under the module CS2103T Software Engineering.',
+			'A brownfield project done in Java under the module CS2103T Software Engineering',
 		image: '/img/tbm_logo.png',
 		link: 'https://github.com/AY2021S1-CS2103T-F11-4/tp',
 		tags: ['Java', 'Software Engineering'],

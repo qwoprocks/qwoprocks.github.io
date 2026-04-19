@@ -151,7 +151,7 @@
 	<!-- Skills -->
 	<section class="section" id="skills">
 		<ShutterLine />
-		<SectionHeader num="06" title="Technical Specifications" />
+		<SectionHeader num="06" title="Skills" />
 		<div class="skills-spec reveal reveal-d1" use:reveal>
 			{#each skillGroups as group}
 				<div class="spec-group">
@@ -428,7 +428,7 @@
 	}
 
 	.spec-group h3 {
-		font-size: var(--text-xs);
+		font-size: var(--text-base);
 		font-weight: 500;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;

@@ -50,11 +50,11 @@
   stepInfo.className = 'maze-step-info';
   stepInfo.textContent = '';
 
+  controls.appendChild(sizeGroup);
+  controls.appendChild(stepInfo);
   controls.appendChild(btnSeed);
   controls.appendChild(btnRun);
   controls.appendChild(btnReset);
-  controls.appendChild(sizeGroup);
-  controls.appendChild(stepInfo);
 
   const canvas = document.createElement('canvas');
   canvas.className = 'maze-canvas';
@@ -121,7 +121,7 @@
       font-family: var(--font-mono, monospace);
       font-size: 0.55rem;
       color: var(--text-muted, #5a5550);
-      margin-left: auto;
+      margin: 0 auto;
       letter-spacing: 0.04em;
     }
     .maze-canvas {
@@ -425,7 +425,7 @@
     stepCount++;
     stepInfo.textContent = 'Step ' + stepCount + ' / ' + totalSteps;
     draw();
-    stepTimer = setTimeout(runStep, 300);
+    stepTimer = setTimeout(runStep, 100);
   }
 
   // --- Resize handling ---

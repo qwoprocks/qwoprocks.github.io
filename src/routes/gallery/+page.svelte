@@ -490,7 +490,6 @@
 		font-size: var(--text-xl);
 		color: var(--text-dim);
 		line-height: 1.7;
-		max-width: 640px;
 		transition: color 0.5s;
 	}
 

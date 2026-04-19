@@ -25,7 +25,7 @@
 	.name {
 		font-size: var(--text-lg);
 		color: var(--text-dim);
-		width: 85px;
+		width: 98px;
 		flex-shrink: 0;
 		transition: color 0.5s;
 	}

@@ -62,6 +62,10 @@ html {
 	scroll-behavior: smooth;
 }
 
+[id] {
+	scroll-margin-top: 64px;
+}
+
 body {
 	font-family: var(--font-mono);
 	background: var(--bg);
@@ -124,7 +128,7 @@ body {
 }
 
 .view-all a {
-	font-size: var(--text-sm);
+	font-size: 0.6rem;
 	letter-spacing: 0.08em;
 	color: var(--text-muted);
 	text-decoration: none;
