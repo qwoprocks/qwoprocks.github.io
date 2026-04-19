@@ -23,10 +23,7 @@
 	let filterKeys = $state<string[]>([]);
 	let filterStates = $state<Record<string, boolean>>({});
 
-	let pollTimer: ReturnType<typeof setTimeout> | null = null;
-	const POLL_MAX_RETRIES = 50; // 50 * 200ms = 10s max
-
-	function pollForFilters(retries = 0) {
+	function pollForFilters() {
 		const w = window as any;
 		if (w.__galleryFilters && w.__galleryToggleFilter) {
 			const filters: Record<string, FilterEntry> = w.__galleryFilters;
@@ -37,8 +34,8 @@
 			}
 			filterStates = states;
 			filtersReady = true;
-		} else if (retries < POLL_MAX_RETRIES) {
-			pollTimer = setTimeout(() => pollForFilters(retries + 1), 200);
+		} else {
+			setTimeout(pollForFilters, 200);
 		}
 	}
 
@@ -92,9 +89,6 @@
 
 	onMount(() => {
 		pollForFilters();
-		return () => {
-			if (pollTimer) clearTimeout(pollTimer);
-		};
 	});
 </script>
 
