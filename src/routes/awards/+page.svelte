@@ -44,7 +44,7 @@
 
 	.award-row {
 		display: grid;
-		grid-template-columns: 40px 1fr;
+		grid-template-columns: 55px 1fr;
 		gap: 1.2rem;
 		padding: 1.5rem 0;
 		border-bottom: 1px solid var(--border);

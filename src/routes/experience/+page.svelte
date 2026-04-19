@@ -55,7 +55,7 @@
 	}
 
 	.tl-bullets {
-		padding-left: 3.5rem;
+		padding: 0 2rem;
 		margin-bottom: 1.5rem;
 		list-style: none;
 	}

@@ -11,7 +11,7 @@ export const education: Education[] = [
 	{
 		school: 'Carnegie Mellon University',
 		degree: "Master's in Machine Learning",
-		period: '2024 – 2025',
+		period: '2023 – 2024',
 		note: 'School of Computer Science, Pittsburgh, PA',
 		gpa: '4.07 / 4.00',
 		details: [
