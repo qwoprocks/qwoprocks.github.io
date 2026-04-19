@@ -5,6 +5,7 @@
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	let scrolled = $state(false);
+	let menuOpen = $state(false);
 	let observer: IntersectionObserver | null = null;
 
 	const isHome = $derived(page.url.pathname === '/');
@@ -38,6 +39,7 @@
 	});
 
 	afterNavigate(() => {
+		menuOpen = false;
 		setupHeroObserver();
 	});
 </script>
@@ -51,7 +53,7 @@
 			</svg>
 		</a>
 	{:else}
-		<a href="/" class="nav-logo">MCL</a>
+		<a href="/" class="nav-logo">TOP</a>
 	{/if}
 	<div class="nav-right">
 		<ul class="nav-links">
@@ -64,8 +66,34 @@
 			<li><a href="/gallery" data-sveltekit-reload>Gallery</a></li>
 		</ul>
 		<ThemeToggle />
+		<button
+			class="hamburger"
+			class:open={menuOpen}
+			onclick={() => (menuOpen = !menuOpen)}
+			aria-label="Toggle navigation menu"
+			aria-expanded={menuOpen}
+		>
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
 	</div>
 </nav>
+
+{#if menuOpen}
+	<div class="mobile-overlay" onclick={() => (menuOpen = false)} role="presentation"></div>
+	<div class="mobile-menu">
+		<ul>
+			<li><a href="/#about" onclick={() => (menuOpen = false)}>About</a></li>
+			<li><a href="/#experience" onclick={() => (menuOpen = false)}>Experience</a></li>
+			<li><a href="/#education" onclick={() => (menuOpen = false)}>Education</a></li>
+			<li><a href="/#awards" onclick={() => (menuOpen = false)}>Awards</a></li>
+			<li><a href="/#projects" onclick={() => (menuOpen = false)}>Projects</a></li>
+			<li><a href="/#skills" onclick={() => (menuOpen = false)}>Skills</a></li>
+			<li><a href="/gallery" data-sveltekit-reload onclick={() => (menuOpen = false)}>Gallery</a></li>
+		</ul>
+	</div>
+{/if}
 
 <style>
 	.nav {
@@ -95,7 +123,7 @@
 	.nav-logo {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 0.9rem;
+		font-size: var(--text-xl);
 		color: var(--heading);
 		text-decoration: none;
 		letter-spacing: 0.02em;
@@ -140,7 +168,7 @@
 	}
 
 	.nav-links a {
-		font-size: 0.6rem;
+		font-size: var(--text-sm);
 		font-weight: 400;
 		letter-spacing: 0.06em;
 		color: var(--text-muted);
@@ -179,13 +207,102 @@
 		}
 
 		.nav-links a {
-			font-size: 0.5rem;
+			font-size: var(--text-2xs);
 		}
+	}
+
+	/* Hamburger button — mobile only */
+	.hamburger {
+		display: none;
+		flex-direction: column;
+		justify-content: center;
+		gap: 4px;
+		width: 30px;
+		height: 30px;
+		background: transparent;
+		border: 1px solid var(--border);
+		border-radius: 50%;
+		cursor: pointer;
+		padding: 7px;
+		transition: var(--theme-transition);
+		flex-shrink: 0;
+	}
+
+	.hamburger:hover {
+		border-color: var(--accent);
+	}
+
+	.hamburger span {
+		display: block;
+		width: 100%;
+		height: 1px;
+		background: var(--text-dim);
+		transition: transform 0.3s, opacity 0.3s;
+	}
+
+	.hamburger:hover span {
+		background: var(--accent);
+	}
+
+	.hamburger.open span:nth-child(1) {
+		transform: translateY(5px) rotate(45deg);
+	}
+
+	.hamburger.open span:nth-child(2) {
+		opacity: 0;
+	}
+
+	.hamburger.open span:nth-child(3) {
+		transform: translateY(-5px) rotate(-45deg);
 	}
 
 	@media (max-width: 480px) {
 		.nav-links {
 			display: none;
 		}
+
+		.hamburger {
+			display: flex;
+		}
+	}
+
+	.mobile-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 98;
+		background: rgba(0, 0, 0, 0.3);
+	}
+
+	.mobile-menu {
+		position: fixed;
+		top: 56px;
+		right: 0;
+		z-index: 99;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-top: none;
+		border-radius: 0 0 0 8px;
+		padding: 1rem 2rem;
+		transition: var(--theme-transition);
+	}
+
+	.mobile-menu ul {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.mobile-menu a {
+		font-size: var(--text-md);
+		font-weight: 400;
+		letter-spacing: 0.06em;
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color 0.3s;
+	}
+
+	.mobile-menu a:hover {
+		color: var(--accent);
 	}
 </style>

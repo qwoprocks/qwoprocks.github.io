@@ -253,6 +253,11 @@
 			const dimColor = styles.getPropertyValue('--text-dim').trim() || '#6a6560';
 			const accentColor = styles.getPropertyValue('--accent').trim() || '#d03030';
 
+			// Chromatic aberration from scroll velocity (shared with stars)
+			const v = Math.min(Math.abs(scrollVelocity) / 1500, 1);
+			const aberrationOffset = v * 3;
+			const aberrationAlpha = v * 1.2;
+
 			// vx damping: 0.95/frame at 60fps → per-second decay constant
 			const VX_DECAY_RATE = -Math.log(0.95) * 60;
 
@@ -278,11 +283,22 @@
 				const alpha = k.alpha * osc;
 
 				ctx.save();
-				ctx.globalAlpha = alpha;
 				ctx.font = `300 ${k.size}px 'Space Grotesk', sans-serif`;
-				ctx.fillStyle = k.accent ? accentColor : dimColor;
 				ctx.textAlign = 'center';
 				ctx.textBaseline = 'middle';
+
+				// Chromatic aberration on scroll (same logic as stars)
+				if (aberrationOffset > 0.1) {
+					ctx.globalAlpha = aberrationAlpha * alpha;
+					ctx.fillStyle = 'rgba(255,50,50,1)';
+					ctx.fillText(k.char, k.x + aberrationOffset, k.y);
+					ctx.fillStyle = 'rgba(50,100,255,1)';
+					ctx.fillText(k.char, k.x - aberrationOffset, k.y);
+				}
+
+				// Normal character
+				ctx.globalAlpha = alpha;
+				ctx.fillStyle = k.accent ? accentColor : dimColor;
 				ctx.fillText(k.char, k.x, k.y);
 				ctx.restore();
 			}

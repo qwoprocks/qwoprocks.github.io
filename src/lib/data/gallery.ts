@@ -106,7 +106,7 @@ export const galleryItems: GalleryItem[] = [
 			{
 				title: 'How It Works',
 				content:
-					'<p>The generator uses a modified Game of Life ruleset adapted from <a href="https://www.reddit.com/r/proceduralgeneration/comments/7v9jbj/" target="_blank">this Reddit post</a>. Starting from a small cross-shaped seed at the center, the automata evolves through several steps:</p><ol><li>Cells with 0 neighbours die (isolation)</li><li>Cells with 1-5 neighbours survive, with a special arch-breaking rule that prevents floating structures</li><li>Cells with exactly 4 neighbours trigger diagonal kills to create passages</li><li>Cells with more than 5 neighbours die (overcrowding)</li><li>Dead cells with exactly 2 neighbours are born</li></ol><p>After the simulation runs for <code>rows + cols - 30</code> steps, outer walls are built around the perimeter.</p>'
+					'<p>The generator uses a modified Game of Life ruleset drawing inspiration from <a href="https://www.reddit.com/r/proceduralgeneration/comments/7v9jbj/" target="_blank" rel="noopener noreferrer">this Reddit post</a>. Starting from a small cross-shaped seed at the center, the automata evolves through several steps:</p><ol><li>Cells with 0 neighbours die (isolation)</li><li>Cells with 1-5 neighbours survive, with a special arch-breaking rule that prevents floating structures</li><li>Cells with exactly 4 neighbours trigger diagonal kills to create passages</li><li>Cells with more than 5 neighbours die (overcrowding)</li><li>Dead cells with exactly 2 neighbours are born</li></ol><p>After the simulation runs for <code>rows + cols - 30</code> steps, outer walls are built around the perimeter.</p>'
 			},
 			{
 				title: 'Implementation',

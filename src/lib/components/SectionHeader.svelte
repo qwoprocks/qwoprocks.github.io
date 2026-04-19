@@ -36,7 +36,7 @@
 	.waypoint-diamond span {
 		transform: rotate(-45deg);
 		font-family: var(--font-mono);
-		font-size: 0.55rem;
+		font-size: var(--text-xs);
 		font-weight: 400;
 		color: var(--text-muted);
 		letter-spacing: 0.05em;
@@ -59,7 +59,7 @@
 	.waypoint-title {
 		font-family: var(--font-head);
 		font-weight: 400;
-		font-size: 1.6rem;
+		font-size: var(--text-4xl);
 		color: var(--heading);
 		letter-spacing: -0.02em;
 		transition: color 0.5s;

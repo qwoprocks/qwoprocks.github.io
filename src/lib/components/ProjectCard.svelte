@@ -84,7 +84,7 @@
 	}
 
 	.project-type {
-		font-size: 0.5rem;
+		font-size: var(--text-2xs);
 		font-weight: 500;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
@@ -96,7 +96,7 @@
 	.project-name {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 1.05rem;
+		font-size: var(--text-2xl);
 		color: var(--heading);
 		margin-bottom: 0.4rem;
 		line-height: 1.3;
@@ -104,7 +104,7 @@
 	}
 
 	.project-desc {
-		font-size: 0.78rem;
+		font-size: var(--text-lg);
 		color: var(--text-dim);
 		line-height: 1.6;
 		margin-bottom: 0.8rem;
@@ -118,7 +118,7 @@
 	}
 
 	.project-stack span {
-		font-size: 0.5rem;
+		font-size: var(--text-2xs);
 		color: var(--text-muted);
 		padding: 0.1rem 0.4rem;
 		border: 1px solid var(--border);

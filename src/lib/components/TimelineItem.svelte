@@ -87,7 +87,7 @@
 	}
 
 	.tl-period {
-		font-size: 0.68rem;
+		font-size: var(--text-base);
 		color: var(--text-muted);
 		margin-bottom: 0.3rem;
 		letter-spacing: 0.02em;
@@ -97,21 +97,21 @@
 	h3 {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 1rem;
+		font-size: var(--text-2xl);
 		color: var(--heading);
 		margin-bottom: 0.1rem;
 		transition: color 0.5s;
 	}
 
 	.tl-company {
-		font-size: 0.82rem;
+		font-size: var(--text-lg);
 		color: var(--text-dim);
 		font-family: var(--font-head);
 		transition: color 0.5s;
 	}
 
 	.tl-desc {
-		font-size: 0.75rem;
+		font-size: var(--text-lg);
 		color: var(--text-muted);
 		margin-top: 0.3rem;
 		transition: color 0.5s;
@@ -172,7 +172,7 @@
 	}
 
 	.tl-bullets li {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--text-dim);
 		line-height: 1.7;
 		padding: 0.15rem 0;
@@ -193,7 +193,7 @@
 	}
 
 	.exp-tag {
-		font-size: 0.5rem;
+		font-size: var(--text-2xs);
 		font-weight: 500;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;

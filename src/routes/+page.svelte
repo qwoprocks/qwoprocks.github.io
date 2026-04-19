@@ -25,7 +25,7 @@
 </script>
 
 <svelte:head>
-	<title>Ming Chong Lim — Quantitative Developer</title>
+	<title>Home | Ming Chong Lim</title>
 </svelte:head>
 
 <Hero />
@@ -37,11 +37,11 @@
 		<SectionHeader num="01" title="About" />
 		<div class="about-text reveal reveal-d1" use:reveal>
 			<p>
-				I'm a Quantitative Developer at <a href="https://drw.com/" target="_blank">DRW</a> in
+				I'm a Quantitative Developer at <a href="https://drw.com/" target="_blank" rel="noopener noreferrer">DRW</a> in
 				Singapore. I graduated from
 				<a
 					href="https://www.ml.cmu.edu/academics/primary-ms-machine-learning-masters.html"
-					target="_blank">Carnegie Mellon University</a
+					target="_blank" rel="noopener noreferrer">Carnegie Mellon University</a
 				> with a Master's in Machine Learning.
 			</p>
 			<p>
@@ -151,7 +151,7 @@
 	<!-- Skills -->
 	<section class="section" id="skills">
 		<ShutterLine />
-		<SectionHeader num="06" title="Technical Specifications" />
+		<SectionHeader num="06" title="Skills" />
 		<div class="skills-spec reveal reveal-d1" use:reveal>
 			{#each skillGroups as group}
 				<div class="spec-group">
@@ -188,7 +188,7 @@
 	/* About */
 	.about-text {
 		max-width: 560px;
-		font-size: 0.85rem;
+		font-size: var(--text-xl);
 		line-height: 1.85;
 		font-weight: 300;
 		color: var(--text);
@@ -242,7 +242,7 @@
 	}
 
 	.edu-year {
-		font-size: 0.68rem;
+		font-size: var(--text-base);
 		color: var(--text-muted);
 		text-align: right;
 		padding-top: 0.15rem;
@@ -259,14 +259,14 @@
 	.edu-info h3 {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 1rem;
+		font-size: var(--text-2xl);
 		color: var(--heading);
 		margin-bottom: 0.1rem;
 		transition: color 0.5s;
 	}
 
 	.degree {
-		font-size: 0.8rem;
+		font-size: var(--text-lg);
 		color: var(--accent);
 		font-weight: 400;
 		margin-bottom: 0.2rem;
@@ -275,7 +275,7 @@
 	}
 
 	.note {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--text-dim);
 		transition: color 0.5s;
 	}
@@ -327,7 +327,7 @@
 	}
 
 	.edu-gpa {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--heading);
 		font-weight: 500;
 		margin-top: 0.6rem;
@@ -341,7 +341,7 @@
 	}
 
 	.edu-details li {
-		font-size: 0.68rem;
+		font-size: var(--text-base);
 		color: var(--text-dim);
 		line-height: 1.7;
 		padding: 0.1rem 0 0.1rem 1rem;
@@ -392,7 +392,7 @@
 	.award-place {
 		font-family: var(--font-head);
 		font-weight: 300;
-		font-size: 1.3rem;
+		font-size: var(--text-3xl);
 		color: var(--accent);
 		font-style: italic;
 		transition: color 0.5s;
@@ -401,14 +401,14 @@
 	.award-info h3 {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 0.88rem;
+		font-size: var(--text-xl);
 		color: var(--heading);
 		margin-bottom: 0.1rem;
 		transition: color 0.5s;
 	}
 
 	.award-info p {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--text-dim);
 		transition: color 0.5s;
 	}
@@ -428,7 +428,7 @@
 	}
 
 	.spec-group h3 {
-		font-size: 0.55rem;
+		font-size: var(--text-base);
 		font-weight: 500;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
@@ -458,21 +458,21 @@
 	.gallery-band h3 {
 		font-family: var(--font-head);
 		font-weight: 400;
-		font-size: 1.3rem;
+		font-size: var(--text-3xl);
 		color: var(--heading);
 		margin-bottom: 0.3rem;
 		transition: color 0.5s;
 	}
 
 	.gallery-band p {
-		font-size: 0.78rem;
+		font-size: var(--text-lg);
 		color: var(--text-dim);
 		max-width: 360px;
 		transition: color 0.5s;
 	}
 
 	.gallery-link {
-		font-size: 0.6rem;
+		font-size: var(--text-sm);
 		letter-spacing: 0.08em;
 		color: var(--accent);
 		text-decoration: none;
