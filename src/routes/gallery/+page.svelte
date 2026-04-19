@@ -415,7 +415,7 @@
 	}
 
 	.section-body.expanded .section-body-inner {
-		padding: 0 0.6rem 1.5rem;
+		padding: 0.6rem 0.6rem 1.5rem;
 	}
 
 	/* Content styling */

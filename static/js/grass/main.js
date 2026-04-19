@@ -216,7 +216,7 @@ const getPixelatePass = (display_width, display_height) => {
     uniforms: {
       'tDiffuse': { value: null },
       'uResolution': { value: new THREE.Vector2(display_width, display_height) },
-      'uPixelSize': { value: 8.0 },
+      'uPixelSize': { value: 6.0 },
     },
     vertexShader: `
       varying vec2 vUv;
