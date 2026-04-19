@@ -168,7 +168,7 @@
 	}
 
 	.nav-links a {
-		font-size: var(--text-sm);
+		font-size: var(--text-md);
 		font-weight: 400;
 		letter-spacing: 0.06em;
 		color: var(--text-muted);
@@ -207,7 +207,7 @@
 		}
 
 		.nav-links a {
-			font-size: var(--text-2xs);
+			font-size: var(--text-xs);
 		}
 	}
 
