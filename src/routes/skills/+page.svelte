@@ -43,7 +43,7 @@
 	}
 
 	.spec-group h3 {
-		font-size: 0.55rem;
+		font-size: var(--text-xs);
 		font-weight: 500;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;

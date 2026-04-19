@@ -61,7 +61,7 @@
 	}
 
 	.tl-bullets li {
-		font-size: 0.75rem;
+		font-size: var(--text-lg);
 		color: var(--text-dim);
 		line-height: 1.7;
 		padding: 0.15rem 0;

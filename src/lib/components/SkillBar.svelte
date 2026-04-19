@@ -23,7 +23,7 @@
 	}
 
 	.name {
-		font-size: 0.75rem;
+		font-size: var(--text-lg);
 		color: var(--text-dim);
 		width: 85px;
 		flex-shrink: 0;

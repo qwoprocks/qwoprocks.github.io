@@ -60,7 +60,7 @@
 	}
 
 	.copyright {
-		font-size: 0.55rem;
+		font-size: var(--text-xs);
 		color: var(--text-muted);
 		letter-spacing: 0.05em;
 		transition: color 0.5s;

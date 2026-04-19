@@ -192,7 +192,7 @@
 	}
 
 	.hero-subtitle {
-		font-size: 0.65rem;
+		font-size: var(--text-base);
 		font-weight: 400;
 		color: var(--text-muted);
 		letter-spacing: 0.15em;
@@ -212,7 +212,7 @@
 	}
 
 	.hero-meta-row span {
-		font-size: 0.68rem;
+		font-size: var(--text-base);
 		color: var(--text-muted);
 		letter-spacing: 0.05em;
 		transition: color 0.5s;
@@ -274,7 +274,7 @@
 	}
 
 	.hero-scroll span {
-		font-size: 0.5rem;
+		font-size: var(--text-2xs);
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
 		color: var(--text-muted);

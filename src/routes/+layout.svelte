@@ -12,7 +12,7 @@
 
 <svelte:head>
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.svg" />
-	<title>Ming Chong Lim — Quantitative Developer</title>
+	<title>Home | Ming Chong Lim</title>
 	<meta name="description" content="Ming Chong Lim — Quantitative Developer at DRW. Carnegie Mellon ML graduate. Portfolio showcasing experience, projects, and research in machine learning, systems programming, and quantitative development." />
 	<meta property="og:title" content="Ming Chong Lim — Quantitative Developer" />
 	<meta property="og:description" content="Quantitative Developer at DRW. Carnegie Mellon ML graduate. Portfolio showcasing experience, projects, and research." />

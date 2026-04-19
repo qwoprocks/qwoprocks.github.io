@@ -58,7 +58,7 @@
 	}
 
 	.edu-year {
-		font-size: 0.68rem;
+		font-size: var(--text-base);
 		color: var(--text-muted);
 		text-align: right;
 		padding-top: 0.15rem;
@@ -75,14 +75,14 @@
 	.edu-info h3 {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 1rem;
+		font-size: var(--text-2xl);
 		color: var(--heading);
 		margin-bottom: 0.1rem;
 		transition: color 0.5s;
 	}
 
 	.degree {
-		font-size: 0.8rem;
+		font-size: var(--text-lg);
 		color: var(--accent);
 		font-weight: 400;
 		margin-bottom: 0.2rem;
@@ -91,7 +91,7 @@
 	}
 
 	.gpa {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--heading);
 		font-weight: 500;
 		margin-bottom: 0.2rem;
@@ -99,7 +99,7 @@
 	}
 
 	.note {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--text-dim);
 		transition: color 0.5s;
 	}
@@ -111,7 +111,7 @@
 	}
 
 	.edu-details li {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--text-dim);
 		line-height: 1.7;
 		padding: 0.1rem 0;

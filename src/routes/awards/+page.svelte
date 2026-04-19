@@ -62,7 +62,7 @@
 	.award-place {
 		font-family: var(--font-head);
 		font-weight: 300;
-		font-size: 1.3rem;
+		font-size: var(--text-3xl);
 		color: var(--accent);
 		font-style: italic;
 		transition: color 0.5s;
@@ -71,14 +71,14 @@
 	.award-info h3 {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 0.88rem;
+		font-size: var(--text-xl);
 		color: var(--heading);
 		margin-bottom: 0.1rem;
 		transition: color 0.5s;
 	}
 
 	.award-date {
-		font-size: 0.6rem;
+		font-size: var(--text-sm);
 		color: var(--text-muted);
 		letter-spacing: 0.05em;
 		margin-bottom: 0.3rem;
@@ -86,7 +86,7 @@
 	}
 
 	.award-info p {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--text-dim);
 		transition: color 0.5s;
 	}
@@ -98,7 +98,7 @@
 	}
 
 	.award-details li {
-		font-size: 0.72rem;
+		font-size: var(--text-md);
 		color: var(--text-dim);
 		line-height: 1.7;
 		padding: 0.15rem 0;

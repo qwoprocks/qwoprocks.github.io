@@ -270,7 +270,7 @@
 
 	.sidebar-title {
 		font-family: var(--font-mono);
-		font-size: 0.6rem;
+		font-size: var(--text-sm);
 		letter-spacing: 0.04em;
 		color: var(--text-muted);
 		transition: color 0.3s;
@@ -286,7 +286,7 @@
 
 	.sidebar-date {
 		font-family: var(--font-mono);
-		font-size: 0.45rem;
+		font-size: var(--text-2xs);
 		letter-spacing: 0.06em;
 		color: var(--text-muted);
 		opacity: 0.6;
@@ -357,7 +357,7 @@
 	}
 
 	.placeholder-label {
-		font-size: 0.55rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--text-muted);
@@ -368,7 +368,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		font-family: var(--font-mono);
-		font-size: 0.8rem;
+		font-size: var(--text-lg);
 		gap: 0.5rem;
 		padding: 0.75rem 0;
 		justify-content: flex-start;
@@ -376,7 +376,7 @@
 
 	.filter-btn {
 		font-family: var(--font-mono);
-		font-size: 0.55rem;
+		font-size: var(--text-xs);
 		letter-spacing: 0.06em;
 		padding: 0.3rem 0.7rem;
 		border: 1px solid var(--border);
@@ -451,7 +451,7 @@
 	.writeup-header h1 {
 		font-family: var(--font-head);
 		font-weight: 400;
-		font-size: 1.6rem;
+		font-size: var(--text-4xl);
 		color: var(--heading);
 		margin-bottom: 0.5rem;
 		transition: color 0.5s;
@@ -466,7 +466,7 @@
 	}
 
 	.writeup-date {
-		font-size: 0.68rem;
+		font-size: var(--text-base);
 		color: var(--text-muted);
 		letter-spacing: 0.02em;
 	}
@@ -478,7 +478,7 @@
 	}
 
 	.tag {
-		font-size: 0.5rem;
+		font-size: var(--text-2xs);
 		padding: 0.1rem 0.4rem;
 		border: 1px solid var(--border);
 		color: var(--text-muted);
@@ -487,7 +487,7 @@
 	}
 
 	.writeup-desc {
-		font-size: 0.85rem;
+		font-size: var(--text-xl);
 		color: var(--text-dim);
 		line-height: 1.7;
 		max-width: 640px;
@@ -520,7 +520,7 @@
 	.section-toggle h2 {
 		font-family: var(--font-head);
 		font-weight: 400;
-		font-size: 1rem;
+		font-size: var(--text-2xl);
 		color: var(--heading);
 		margin: 0;
 		pointer-events: none;
@@ -528,7 +528,7 @@
 	}
 
 	.toggle-icon {
-		font-size: 1rem;
+		font-size: var(--text-2xl);
 		color: var(--text-muted);
 		transition: transform 0.3s var(--ease), color 0.3s;
 		font-family: var(--font-mono);
@@ -567,7 +567,7 @@
 
 	/* Content styling */
 	.section-body-inner :global(p) {
-		font-size: 0.82rem;
+		font-size: var(--text-lg);
 		color: var(--text);
 		line-height: 1.8;
 		margin: 0 0 0.8rem;
@@ -579,7 +579,7 @@
 	}
 
 	.section-body-inner :global(code) {
-		font-size: 0.78rem;
+		font-size: var(--text-lg);
 		padding: 0.1rem 0.35rem;
 		background: var(--surface-2);
 		border: 1px solid var(--border);
@@ -594,7 +594,7 @@
 	}
 
 	.section-body-inner :global(li) {
-		font-size: 0.82rem;
+		font-size: var(--text-lg);
 		color: var(--text);
 		line-height: 1.7;
 		margin-bottom: 0.3rem;
@@ -615,7 +615,7 @@
 	.references-list li {
 		padding: 0.4rem 0;
 		border-bottom: 1px solid var(--border);
-		font-size: 0.78rem;
+		font-size: var(--text-lg);
 	}
 
 	.references-list li:last-child {

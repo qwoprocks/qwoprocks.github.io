@@ -53,7 +53,7 @@
 			</svg>
 		</a>
 	{:else}
-		<a href="/" class="nav-logo">MCL</a>
+		<a href="/" class="nav-logo">TOP</a>
 	{/if}
 	<div class="nav-right">
 		<ul class="nav-links">
@@ -123,7 +123,7 @@
 	.nav-logo {
 		font-family: var(--font-head);
 		font-weight: 500;
-		font-size: 0.9rem;
+		font-size: var(--text-xl);
 		color: var(--heading);
 		text-decoration: none;
 		letter-spacing: 0.02em;
@@ -168,7 +168,7 @@
 	}
 
 	.nav-links a {
-		font-size: 0.6rem;
+		font-size: var(--text-sm);
 		font-weight: 400;
 		letter-spacing: 0.06em;
 		color: var(--text-muted);
@@ -207,7 +207,7 @@
 		}
 
 		.nav-links a {
-			font-size: 0.5rem;
+			font-size: var(--text-2xs);
 		}
 	}
 
@@ -294,7 +294,7 @@
 	}
 
 	.mobile-menu a {
-		font-size: 0.7rem;
+		font-size: var(--text-md);
 		font-weight: 400;
 		letter-spacing: 0.06em;
 		color: var(--text-muted);
