@@ -73,7 +73,7 @@
 				stars.push({
 					x: Math.random() * w,
 					y: Math.random() * h,
-					r: Math.random() * 1.2 + 0.3,
+					r: Math.random() * 1.2 + 0.6,
 					baseAlpha: Math.random() * 0.4 + 0.15,
 					// Active: 2-5s cycle; Steady: 15-40s cycle
 					s: active
