@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morphing Blob Variations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #060806; color: #fff; font-family: 'DM Sans', sans-serif; overflow: hidden; height: 100vh; }
+  #bg-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
+  #bg-container canvas { width: 100% !important; height: 100% !important; }
+  .content {
+    position: relative; z-index: 1; height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; padding: 0 8vw;
+    background: linear-gradient(105deg, rgba(6,8,6,0.85) 0%, rgba(6,8,6,0.4) 30%, transparent 55%);
+  }
+  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 20px 8vw; }
+  .topbar .logo { font-family: 'Instrument Serif', serif; font-size: 18px; color: rgba(255,255,255,0.6); }
+  .topbar nav { display: flex; gap: 28px; font-size: 13px; }
+  .topbar nav a { color: rgba(255,255,255,0.35); text-decoration: none; cursor: pointer; transition: color 0.3s; }
+  .topbar nav a:hover { color: rgba(255,255,255,0.8); }
+  .topbar nav a.active { color: rgba(148,163,122,0.9); }
+  h1 { font-family: 'Instrument Serif', serif; font-size: clamp(48px, 6vw, 72px); font-weight: 400; line-height: 1.05; margin-bottom: 20px; max-width: 550px; }
+  .sub { font-size: 16px; color: rgba(255,255,255,0.45); max-width: 420px; line-height: 1.7; margin-bottom: 32px; }
+  .cta-row { display: flex; gap: 12px; }
+  .cta { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.04em; padding: 12px 24px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); background: rgba(255,255,255,0.03); cursor: pointer; transition: all 0.3s; }
+  .cta:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #fff; }
+  .mode-switcher {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 10;
+    display: flex; gap: 6px; background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+    padding: 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
+  }
+  .mode-btn { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 8px 16px; border-radius: 7px; border: none; background: transparent; color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.25s; }
+  .mode-btn:hover { color: rgba(255,255,255,0.7); }
+  .mode-btn.active { background: rgba(108,118,91,0.25); color: rgba(148,163,122,0.95); }
+</style>
+</head>
+<body>
+<div id="bg-container"></div>
+<div class="topbar">
+  <div class="logo">Ming Chong Lim</div>
+  <nav><a class="active">About</a><a>Education</a><a>Experience</a><a>Awards</a><a>Projects</a><a>Skills</a><a>Gallery</a></nav>
+</div>
+<div class="content">
+  <h1>Ming Chong Lim</h1>
+  <div class="sub">ML researcher, builder, educator. Master's in Machine Learning at Carnegie Mellon University.</div>
+  <div class="cta-row"><div class="cta">View Projects &rarr;</div><div class="cta">Resume &darr;</div></div>
+</div>
+<div class="mode-switcher">
+  <button class="mode-btn active" onclick="setMode('smooth')">Smooth</button>
+  <button class="mode-btn" onclick="setMode('iridescent')">Iridescent</button>
+  <button class="mode-btn" onclick="setMode('wireframe')">Wire + Cel</button>
+  <button class="mode-btn" onclick="setMode('glass')">Glass</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const container = document.getElementById('bg-container');
+let currentCleanup = null;
+let mouseX = 0, mouseY = 0;
+let smoothMouseX = 0, smoothMouseY = 0;
+document.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+  mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+// ─── Shared noise GLSL ───
+const NOISE_GLSL = `
+  vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
+  vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
+  vec4 permute(vec4 x){return mod289(((x*34.)+10.)*x);}
+  vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-.85373472095314*r;}
+  float snoise(vec3 v){
+    const vec2 C=vec2(1./6.,1./3.);const vec4 D=vec4(0.,.5,1.,2.);
+    vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);
+    vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.-g;
+    vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);
+    vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;
+    i=mod289(i);
+    vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+    float n_=1./7.;vec3 ns=n_*D.wyz-D.xzx;
+    vec4 j=p-49.*floor(p*ns.z*ns.z);
+    vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.*x_);
+    vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;
+    vec4 h=1.-abs(x)-abs(y);
+    vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);
+    vec4 s0=floor(b0)*2.+1.;vec4 s1=floor(b1)*2.+1.;
+    vec4 sh=-step(h,vec4(0.));
+    vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+    vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);
+    vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);
+    vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+    p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+    vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);
+    m=m*m;return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+  }
+`;
+
+// ─── Shared vertex shader for displacement ───
+const BLOB_VERT = `
+  uniform float uTime;
+  uniform vec2 uMouse;
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+  varying vec3 vWorldPos;
+  varying float vDisplacement;
+  varying vec3 vOrigNormal;
+
+  ${NOISE_GLSL}
+
+  float getDisplacement(vec3 p, float t, vec2 mouse) {
+    float d = snoise(p * 1.0 + t * 0.35) * 0.55;
+    d += snoise(p * 2.0 + t * 0.5) * 0.25;
+    d += snoise(p * 4.0 + t * 0.3) * 0.1;
+    d += snoise(p * 1.3 + vec3(mouse * 1.5, t * 0.4)) * 0.2;
+    return d;
+  }
+
+  void main(){
+    float t = uTime;
+    float d = getDisplacement(position, t, uMouse);
+    vDisplacement = d;
+    vOrigNormal = normal;
+
+    vec3 pos = position + normal * d * 0.45;
+
+    // Recompute normal via finite differences
+    float eps = 0.005;
+    vec3 t1 = normalize(cross(normal, vec3(0.,1.,0.001)));
+    vec3 t2 = cross(normal, t1);
+    float d1 = getDisplacement(position + t1 * eps, t, uMouse);
+    float d2 = getDisplacement(position + t2 * eps, t, uMouse);
+    vec3 p1 = position + t1 * eps + normal * d1 * 0.45;
+    vec3 p2 = position + t2 * eps + normal * d2 * 0.45;
+    vNormal = normalize(cross(p1 - pos, p2 - pos));
+
+    vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+    vWorldPos = worldPos.xyz;
+    vViewDir = normalize(cameraPosition - worldPos.xyz);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
+`;
+
+function makeRenderer() {
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x060806, 1);
+  container.appendChild(renderer.domElement);
+  return renderer;
+}
+
+function makeScene() {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 6.5);
+  return { scene, camera };
+}
+
+// ═══════════ 1. SMOOTH — refined cel with specular step + bloom ═══════════
+function createSmooth() {
+  const renderer = makeRenderer();
+  const { scene, camera } = makeScene();
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime: {value:0}, uMouse: {value: new THREE.Vector2()} },
+    vertexShader: BLOB_VERT,
+    fragmentShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewDir;
+      varying float vDisplacement;
+
+      void main(){
+        vec3 n = normalize(vNormal);
+        vec3 lightDir = normalize(vec3(0.8, 1.0, 0.6));
+        vec3 viewDir = normalize(vViewDir);
+        float NdotL = dot(n, lightDir);
+
+        // 5-step smooth cel ramp
+        float shade;
+        if      (NdotL > 0.65) shade = 1.0;
+        else if (NdotL > 0.35) shade = 0.75;
+        else if (NdotL > 0.1)  shade = 0.5;
+        else if (NdotL > -0.15) shade = 0.3;
+        else shade = 0.15;
+
+        // Specular step
+        vec3 halfDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(n, halfDir), 0.0), 40.0);
+        float specStep = step(0.5, spec) * 0.25;
+
+        // Rich color gradient based on displacement
+        vec3 deep    = vec3(0.06, 0.10, 0.06);
+        vec3 mid     = vec3(0.15, 0.28, 0.13);
+        vec3 bright  = vec3(0.28, 0.45, 0.22);
+        vec3 peak    = vec3(0.40, 0.55, 0.28);
+        float t = smoothstep(-0.5, 0.7, vDisplacement);
+        vec3 baseColor = mix(deep, mid, smoothstep(0.0, 0.35, t));
+        baseColor = mix(baseColor, bright, smoothstep(0.35, 0.65, t));
+        baseColor = mix(baseColor, peak, smoothstep(0.65, 1.0, t));
+
+        // Fresnel rim
+        float fresnel = pow(1.0 - max(dot(n, viewDir), 0.0), 3.5);
+        vec3 rimColor = vec3(0.35, 0.55, 0.30);
+
+        vec3 color = baseColor * shade + specStep * vec3(0.4, 0.55, 0.35) + rimColor * fresnel * 0.3;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+
+  const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.7, 128), mat);
+  blob.position.set(1.8, 0.2, 0);
+  scene.add(blob);
+
+  // Bloom
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.4, 0.8, 0.3);
+  composer.addPass(bloom);
+
+  let running = true;
+  const clock = new THREE.Clock();
+  function animate(){
+    if (!running) return;
+    smoothMouseX += (mouseX - smoothMouseX) * 0.03;
+    smoothMouseY += (mouseY - smoothMouseY) * 0.03;
+    mat.uniforms.uTime.value = clock.getElapsedTime();
+    mat.uniforms.uMouse.value.set(smoothMouseX, smoothMouseY);
+    blob.rotation.y = clock.getElapsedTime() * 0.1;
+    blob.rotation.x = Math.sin(clock.getElapsedTime() * 0.08) * 0.15;
+    composer.render();
+    requestAnimationFrame(animate);
+  }
+  animate();
+  const onResize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); composer.setSize(window.innerWidth,window.innerHeight); };
+  window.addEventListener('resize', onResize);
+  return () => { running = false; window.removeEventListener('resize', onResize); renderer.dispose(); renderer.domElement.remove(); };
+}
+
+// ═══════════ 2. IRIDESCENT — view-angle color shifting ═══════════
+function createIridescent() {
+  const renderer = makeRenderer();
+  const { scene, camera } = makeScene();
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime: {value:0}, uMouse: {value: new THREE.Vector2()} },
+    vertexShader: BLOB_VERT,
+    fragmentShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewDir;
+      varying float vDisplacement;
+
+      vec3 palette(float t) {
+        // Peacock-like iridescence in green-teal-gold range
+        vec3 a = vec3(0.15, 0.22, 0.12);
+        vec3 b = vec3(0.18, 0.20, 0.15);
+        vec3 c = vec3(1.0, 1.0, 0.8);
+        vec3 d = vec3(0.10, 0.25, 0.15);
+        return a + b * cos(6.28318 * (c * t + d));
+      }
+
+      void main(){
+        vec3 n = normalize(vNormal);
+        vec3 viewDir = normalize(vViewDir);
+        vec3 lightDir = normalize(vec3(0.6, 1.0, 0.5));
+
+        float NdotL = dot(n, lightDir);
+        float shade;
+        if      (NdotL > 0.5) shade = 1.0;
+        else if (NdotL > 0.15) shade = 0.65;
+        else if (NdotL > -0.1) shade = 0.35;
+        else shade = 0.15;
+
+        // Iridescence from view angle + displacement
+        float fresnel = 1.0 - max(dot(n, viewDir), 0.0);
+        float iriT = fresnel * 0.7 + vDisplacement * 0.5 + 0.3;
+        vec3 iriColor = palette(iriT);
+
+        // Specular
+        vec3 halfDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(n, halfDir), 0.0), 60.0);
+        float specStep = step(0.4, spec) * 0.3;
+
+        // Rim glow
+        float rim = pow(fresnel, 2.5);
+        vec3 rimColor = palette(iriT + 0.3) * 0.4;
+
+        vec3 color = iriColor * shade + specStep * vec3(0.6, 0.7, 0.5) + rimColor * rim;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+
+  const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.7, 128), mat);
+  blob.position.set(1.8, 0.2, 0);
+  scene.add(blob);
+
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.6, 0.25));
+
+  let running = true;
+  const clock = new THREE.Clock();
+  function animate(){
+    if (!running) return;
+    smoothMouseX += (mouseX - smoothMouseX) * 0.03;
+    smoothMouseY += (mouseY - smoothMouseY) * 0.03;
+    mat.uniforms.uTime.value = clock.getElapsedTime();
+    mat.uniforms.uMouse.value.set(smoothMouseX, smoothMouseY);
+    blob.rotation.y = clock.getElapsedTime() * 0.12;
+    blob.rotation.x = Math.sin(clock.getElapsedTime() * 0.09) * 0.12;
+    composer.render();
+    requestAnimationFrame(animate);
+  }
+  animate();
+  const onResize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); composer.setSize(window.innerWidth,window.innerHeight); };
+  window.addEventListener('resize', onResize);
+  return () => { running = false; window.removeEventListener('resize', onResize); renderer.dispose(); renderer.domElement.remove(); };
+}
+
+// ═══════════ 3. WIREFRAME + CEL — technical blueprint feel ═══════════
+function createWireframe() {
+  const renderer = makeRenderer();
+  const { scene, camera } = makeScene();
+
+  const geo = new THREE.IcosahedronGeometry(1.7, 48);
+
+  // Solid cel pass
+  const celMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: {value:0}, uMouse: {value: new THREE.Vector2()} },
+    vertexShader: BLOB_VERT,
+    fragmentShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewDir;
+      varying float vDisplacement;
+
+      void main(){
+        vec3 n = normalize(vNormal);
+        vec3 lightDir = normalize(vec3(0.7, 1.0, 0.5));
+        float NdotL = dot(n, lightDir);
+
+        float shade;
+        if      (NdotL > 0.5) shade = 0.7;
+        else if (NdotL > 0.1)  shade = 0.4;
+        else shade = 0.15;
+
+        vec3 color = vec3(0.08, 0.14, 0.07) * shade;
+
+        float fresnel = pow(1.0 - max(dot(n, normalize(vViewDir)), 0.0), 3.0);
+        color += vec3(0.1, 0.2, 0.1) * fresnel * 0.5;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+  const solid = new THREE.Mesh(geo, celMat);
+  solid.position.set(1.8, 0.2, 0);
+  scene.add(solid);
+
+  // Wireframe pass
+  const wireMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: {value:0}, uMouse: {value: new THREE.Vector2()} },
+    wireframe: true,
+    vertexShader: BLOB_VERT,
+    fragmentShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewDir;
+      varying float vDisplacement;
+
+      void main(){
+        float fresnel = pow(1.0 - max(dot(normalize(vNormal), normalize(vViewDir)), 0.0), 2.0);
+        float alpha = 0.08 + fresnel * 0.35;
+        vec3 color = vec3(0.4, 0.65, 0.35);
+        gl_FragColor = vec4(color, alpha);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+  });
+  const wire = new THREE.Mesh(geo, wireMat);
+  wire.position.set(1.8, 0.2, 0);
+  scene.add(wire);
+
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.6, 0.5, 0.2));
+
+  let running = true;
+  const clock = new THREE.Clock();
+  function animate(){
+    if (!running) return;
+    smoothMouseX += (mouseX - smoothMouseX) * 0.03;
+    smoothMouseY += (mouseY - smoothMouseY) * 0.03;
+    const t = clock.getElapsedTime();
+    celMat.uniforms.uTime.value = t;
+    celMat.uniforms.uMouse.value.set(smoothMouseX, smoothMouseY);
+    wireMat.uniforms.uTime.value = t;
+    wireMat.uniforms.uMouse.value.set(smoothMouseX, smoothMouseY);
+    solid.rotation.y = wire.rotation.y = t * 0.1;
+    solid.rotation.x = wire.rotation.x = Math.sin(t * 0.08) * 0.15;
+    composer.render();
+    requestAnimationFrame(animate);
+  }
+  animate();
+  const onResize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); composer.setSize(window.innerWidth,window.innerHeight); };
+  window.addEventListener('resize', onResize);
+  return () => { running = false; window.removeEventListener('resize', onResize); renderer.dispose(); renderer.domElement.remove(); };
+}
+
+// ═══════════ 4. GLASS — translucent with environment + refraction feel ═══════════
+function createGlass() {
+  const renderer = makeRenderer();
+  const { scene, camera } = makeScene();
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime: {value:0}, uMouse: {value: new THREE.Vector2()} },
+    vertexShader: BLOB_VERT,
+    fragmentShader: `
+      varying vec3 vNormal;
+      varying vec3 vViewDir;
+      varying vec3 vWorldPos;
+      varying float vDisplacement;
+
+      ${NOISE_GLSL}
+
+      void main(){
+        vec3 n = normalize(vNormal);
+        vec3 viewDir = normalize(vViewDir);
+        vec3 lightDir = normalize(vec3(0.6, 1.0, 0.4));
+
+        // Fake refraction — sample noise at refracted direction
+        vec3 refracted = refract(-viewDir, n, 0.85);
+        float innerNoise = snoise(refracted * 2.0 + vWorldPos * 0.5) * 0.5 + 0.5;
+
+        // Inner color from refracted noise
+        vec3 innerColor = mix(
+          vec3(0.05, 0.12, 0.06),
+          vec3(0.18, 0.35, 0.15),
+          innerNoise
+        );
+
+        // Subsurface scattering approximation
+        float sss = max(0.0, dot(viewDir, -lightDir + n * 0.5)) * 0.4;
+        innerColor += vec3(0.12, 0.25, 0.10) * sss;
+
+        // Cel-stepped diffuse on surface
+        float NdotL = dot(n, lightDir);
+        float shade;
+        if (NdotL > 0.4) shade = 0.9;
+        else if (NdotL > 0.0) shade = 0.55;
+        else shade = 0.25;
+
+        // Specular
+        vec3 halfDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(n, halfDir), 0.0), 80.0);
+        float specStep = smoothstep(0.35, 0.45, spec) * 0.6;
+
+        // Fresnel
+        float fresnel = pow(1.0 - max(dot(n, viewDir), 0.0), 4.0);
+
+        // Surface reflection color
+        vec3 surfaceColor = vec3(0.15, 0.25, 0.12);
+
+        // Blend inner and surface based on fresnel
+        vec3 color = mix(innerColor * shade, surfaceColor, fresnel * 0.6);
+        color += specStep * vec3(0.5, 0.65, 0.45);
+        color += vec3(0.2, 0.35, 0.18) * fresnel * 0.35;
+
+        // Edge darkening
+        float edge = smoothstep(0.0, 0.2, abs(dot(n, viewDir)));
+        color *= edge * 0.5 + 0.5;
+
+        gl_FragColor = vec4(color, 0.88 + fresnel * 0.12);
+      }
+    `,
+    transparent: true,
+  });
+
+  const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.7, 128), mat);
+  blob.position.set(1.8, 0.2, 0);
+  scene.add(blob);
+
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.7, 0.25));
+
+  let running = true;
+  const clock = new THREE.Clock();
+  function animate(){
+    if (!running) return;
+    smoothMouseX += (mouseX - smoothMouseX) * 0.03;
+    smoothMouseY += (mouseY - smoothMouseY) * 0.03;
+    mat.uniforms.uTime.value = clock.getElapsedTime();
+    mat.uniforms.uMouse.value.set(smoothMouseX, smoothMouseY);
+    blob.rotation.y = clock.getElapsedTime() * 0.12;
+    blob.rotation.x = Math.sin(clock.getElapsedTime() * 0.09) * 0.12;
+    composer.render();
+    requestAnimationFrame(animate);
+  }
+  animate();
+  const onResize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); composer.setSize(window.innerWidth,window.innerHeight); };
+  window.addEventListener('resize', onResize);
+  return () => { running = false; window.removeEventListener('resize', onResize); renderer.dispose(); renderer.domElement.remove(); };
+}
+
+// ═══════════ MODE SWITCHING ═══════════
+const modes = { smooth: createSmooth, iridescent: createIridescent, wireframe: createWireframe, glass: createGlass };
+window.setMode = function(mode) {
+  if (currentCleanup) currentCleanup();
+  currentCleanup = modes[mode]();
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+};
+currentCleanup = createSmooth();
+</script>
+</body>
+</html>

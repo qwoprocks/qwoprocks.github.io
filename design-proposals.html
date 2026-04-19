@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Proposals v2 — Ming Chong Lim Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --faint: #e5e7eb;
+    --bg: #0c0c0c;
+    --surface: #161616;
+    --surface-2: #1e1e1e;
+    --accent: #6c765b;
+    --accent-bright: #94a37a;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    color: #e0e0e0;
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Top Nav ─── */
+  .topnav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(12,12,12,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 14px 40px;
+    display: flex; align-items: center; gap: 28px;
+  }
+  .topnav h1 {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .topnav .tabs { display: flex; gap: 4px; }
+  .topnav .tab {
+    padding: 7px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    color: #888; background: transparent;
+    border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .topnav .tab:hover { color: #ccc; background: rgba(255,255,255,0.05); }
+  .topnav .tab.active { color: var(--accent-bright); background: rgba(108,118,91,0.15); }
+
+  /* ─── Sections ─── */
+  .section { display: none; padding: 90px 40px 60px; max-width: 1100px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .section-header { margin-bottom: 48px; max-width: 680px; }
+  .section-header .label {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent-bright); margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-family: var(--serif); font-size: 36px; line-height: 1.2;
+    color: #fff; margin-bottom: 16px;
+  }
+  .section-header p { font-size: 15px; color: #999; line-height: 1.7; }
+
+  /* ─── Concept Cards ─── */
+  .concepts { display: grid; grid-template-columns: 1fr; gap: 32px; }
+  .concept {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .concept-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .concept-header .badge {
+    display: inline-block;
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .badge.recommended { background: rgba(108,118,91,0.2); color: var(--accent-bright); }
+  .badge.alt { background: rgba(255,255,255,0.06); color: #888; }
+  .concept-header h3 { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .concept-header p { font-size: 14px; color: #999; line-height: 1.6; }
+  .concept-body { padding: 0; }
+
+  /* ─── WIREFRAME A: Generative Canvas Landing ─── */
+  .wire-generative {
+    position: relative;
+    height: 520px;
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+  .wire-generative canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+  .wire-generative .overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 0 60px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+  }
+  .wire-generative .overlay .nav-row {
+    position: absolute;
+    top: 24px; left: 60px; right: 60px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .wire-generative .overlay .nav-row .logo {
+    font-family: var(--serif); font-size: 16px; color: rgba(255,255,255,0.7);
+  }
+  .wire-generative .overlay .nav-row nav {
+    display: flex; gap: 24px; font-size: 12px;
+  }
+  .wire-generative .overlay .nav-row nav a {
+    color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.3s;
+  }
+  .wire-generative .overlay .nav-row nav a:hover { color: rgba(255,255,255,0.8); }
+  .wire-generative .overlay h1 {
+    font-family: var(--serif);
+    font-size: 56px;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    max-width: 500px;
+  }
+  .wire-generative .overlay .sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    max-width: 400px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+  .wire-generative .overlay .cta-row {
+    display: flex; gap: 12px;
+  }
+  .wire-generative .overlay .cta {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .wire-generative .overlay .cta:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  /* ─── WIREFRAME B: Bento Grid ─── */
+  .wire-bento {
+    padding: 20px;
+    background: #0e0e0e;
+  }
+  .wire-bento .bento-top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 8px 24px;
+  }
+  .wire-bento .bento-top .logo {
+    font-family: var(--serif); font-size: 16px; color: rgba(255,255,255,0.7);
+  }
+  .wire-bento .bento-top nav {
+    display: flex; gap: 20px; font-size: 12px;
+  }
+  .wire-bento .bento-top nav a { color: rgba(255,255,255,0.35); text-decoration: none; }
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    gap: 12px;
+  }
+  .bento-cell {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .bento-cell:hover {
+    border-color: rgba(108,118,91,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .bento-cell.intro {
+    grid-column: span 2;
+    grid-row: span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 36px;
+    background: linear-gradient(145deg, #1a1d17 0%, #141614 100%);
+  }
+  .bento-cell.intro h2 {
+    font-family: var(--serif);
+    font-size: 32px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .bento-cell.intro p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+  .bento-cell.intro .wave {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+  .bento-cell .cell-label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent-bright);
+    margin-bottom: 10px;
+  }
+  .bento-cell .cell-title {
+    font-size: 15px; font-weight: 600; color: #ddd;
+    margin-bottom: 4px;
+  }
+  .bento-cell .cell-sub {
+    font-size: 12px; color: #666; line-height: 1.5;
+  }
+  .bento-cell.gallery-preview {
+    grid-column: span 2;
+    min-height: 160px;
+    background: linear-gradient(135deg, #14261a 0%, #0e1a12 50%, #0c160f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .bento-cell.gallery-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 70%, rgba(108,118,91,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 30%, rgba(80,100,60,0.1) 0%, transparent 50%);
+  }
+  .bento-cell.gallery-preview .preview-text {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+    z-index: 1;
+  }
+  .bento-cell.skills-preview .mini-tags {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;
+  }
+  .bento-cell.skills-preview .mini-tag {
+    font-size: 9px; font-family: var(--mono);
+    padding: 3px 7px; border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    color: #888;
+  }
+  .bento-cell.skills-preview .mini-tag.hl {
+    background: rgba(108,118,91,0.15);
+    color: var(--accent-bright);
+  }
+  .bento-cell .arrow {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.04);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #555;
+    transition: all 0.3s;
+  }
+  .bento-cell:hover .arrow {
+    background: rgba(108,118,91,0.15);
+    color: var(--accent-bright);
+  }
+
+  /* ─── WIREFRAME C: Scroll Reveal ─── */
+  .wire-scroll {
+    background: #0a0a0a;
+    padding: 0;
+    height: 520px;
+    overflow-y: auto;
+    position: relative;
+    scroll-snap-type: y mandatory;
+  }
+  .wire-scroll::-webkit-scrollbar { width: 4px; }
+  .wire-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .scroll-section {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+    position: relative;
+    padding: 40px 60px;
+  }
+  .scroll-section:nth-child(1) {
+    background: linear-gradient(180deg, #0a0a0a, #0f0f0f);
+  }
+  .scroll-section:nth-child(2) {
+    background: linear-gradient(180deg, #0f0f0f, #0a100c);
+  }
+  .scroll-section:nth-child(3) {
+    background: linear-gradient(180deg, #0a100c, #0c0c10);
+  }
+  .scroll-section .scroll-content {
+    max-width: 600px;
+  }
+  .scroll-section .scroll-content .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent-bright);
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+  .scroll-section .scroll-content h2 {
+    font-family: var(--serif);
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .scroll-section .scroll-content p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.7;
+  }
+  .scroll-section .scroll-visual {
+    position: absolute;
+    right: 60px;
+    width: 300px;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .scroll-section:nth-child(1) .scroll-visual {
+    background: linear-gradient(135deg, #1a1d17, #252a1f);
+    border: 1px solid rgba(108,118,91,0.15);
+  }
+  .scroll-section:nth-child(2) .scroll-visual {
+    background: linear-gradient(135deg, #171a1d, #1f2325);
+    border: 1px solid rgba(91,108,118,0.15);
+  }
+  .scroll-section:nth-child(3) .scroll-visual {
+    background: linear-gradient(135deg, #1a171d, #231f25);
+    border: 1px solid rgba(108,91,118,0.15);
+  }
+  .scroll-visual-label {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.05em;
+  }
+  .scroll-indicator {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    animation: float 2s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ─── Comparison Tables ─── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 13px;
+  }
+  .compare-table th {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: #888;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .compare-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #ccc;
+  }
+  .compare-table td:first-child {
+    color: #888;
+    font-size: 12px;
+  }
+  .pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .pill.yes { background: rgba(108,118,91,0.2); color: var(--accent-bright); }
+  .pill.no { background: rgba(255,255,255,0.04); color: #555; }
+  .pill.partial { background: rgba(200,170,60,0.15); color: #c8a63c; }
+
+  /* ─── Implementation Notes ─── */
+  .impl-notes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .impl-note {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .impl-note h4 {
+    font-size: 13px;
+    color: #ddd;
+    margin-bottom: 6px;
+  }
+  .impl-note p {
+    font-size: 12px;
+    color: #777;
+    line-height: 1.6;
+  }
+  .impl-note code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: rgba(255,255,255,0.06);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--accent-bright);
+  }
+
+  /* ─── Interactive Canvas Demo ─── */
+  .demo-note {
+    padding: 16px 24px;
+    margin: 16px 0;
+    border-left: 2px solid var(--accent);
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+  }
+  .demo-note strong { color: #ccc; }
+
+  @media (max-width: 800px) {
+    .topnav { padding: 12px 16px; gap: 12px; flex-wrap: wrap; }
+    .section { padding: 90px 16px 40px; }
+    .bento-grid { grid-template-columns: 1fr 1fr; }
+    .bento-cell.intro { grid-column: span 2; }
+    .impl-notes { grid-template-columns: 1fr; }
+    .wire-generative .overlay h1 { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <h1>Portfolio Redesign v2</h1>
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('direction')">Direction</button>
+    <button class="tab" onclick="showSection('option-a')">A: Generative Canvas</button>
+    <button class="tab" onclick="showSection('option-b')">B: Bento Grid</button>
+    <button class="tab" onclick="showSection('option-c')">C: Scroll Narrative</button>
+    <button class="tab" onclick="showSection('compare')">Compare</button>
+  </div>
+</div>
+
+<!-- ═══════════════ DIRECTION ═══════════════ -->
+<div id="direction" class="section active">
+  <div class="section-header">
+    <div class="label">Creative Direction</div>
+    <h2>Three approaches, all minimal, all alive</h2>
+    <p>Each option leans into what makes your site unique: you already have a stunning Three.js scene that most portfolio sites can't touch. The question is how to extend that creative energy across the whole site, not just the gallery page. No photos, no stat bars, no hero templates. Just craft.</p>
+  </div>
+
+  <div class="concepts" style="gap: 20px;">
+    <div style="background: var(--surface); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 24px;">
+      <h3 style="font-size: 16px; color: #fff; margin-bottom: 12px;">Design principles (shared across all options)</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--accent-bright); margin-bottom: 6px;">01 GENERATIVE > STATIC</div>
+          <p style="font-size: 13px; color: #888; line-height: 1.5;">Use procedural/noise-based visuals as backgrounds instead of flat colors or stock imagery. Every visit feels subtly different. You already have the Three.js chops — use them site-wide.</p>
+        </div>
+        <div>
+          <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--accent-bright); margin-bottom: 6px;">02 TYPOGRAPHY AS IDENTITY</div>
+          <p style="font-size: 13px; color: #888; line-height: 1.5;">Let type carry the personality instead of a photo. A distinctive serif for your name, monospace for metadata, clean sans for body. The type IS your avatar.</p>
+        </div>
+        <div>
+          <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--accent-bright); margin-bottom: 6px;">03 MOTION WITH PURPOSE</div>
+          <p style="font-size: 13px; color: #888; line-height: 1.5;">Every animation should feel intentional — page transitions via SvelteKit's view transition API, staggered reveals on route change, subtle parallax. Never gratuitous, always earned.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ OPTION A: GENERATIVE CANVAS ═══════════════ -->
+<div id="option-a" class="section">
+  <div class="section-header">
+    <div class="label">Option A</div>
+    <h2>Generative canvas background</h2>
+    <p>A full-viewport canvas runs behind the entire site — not just the gallery. A simplex noise field, particle system, or flow field that reacts subtly to scroll position and mouse. Content floats over it with a gradient veil. Each page gets a different noise seed or color palette so the background shifts as you navigate.</p>
+  </div>
+
+  <div class="concepts">
+    <div class="concept">
+      <div class="concept-header">
+        <span class="badge recommended">Recommended</span>
+        <h3>Homepage: Your name over a living canvas</h3>
+        <p>The grass scene you built proves you can make something beautiful. Imagine a simpler, subtler version (flow field, particles, Perlin terrain) filling the viewport on every page, with content layered on top. Navigation triggers a smooth noise-seed transition.</p>
+      </div>
+      <div class="concept-body">
+        <div class="wire-generative">
+          <canvas id="demo-canvas"></canvas>
+          <div class="overlay">
+            <div class="nav-row">
+              <div class="logo">Ming Chong Lim</div>
+              <nav>
+                <a>Education</a>
+                <a>Experience</a>
+                <a>Awards</a>
+                <a>Projects</a>
+                <a>Skills</a>
+                <a>Gallery</a>
+              </nav>
+            </div>
+            <h1>Ming Chong Lim</h1>
+            <div class="sub">ML researcher, builder, educator. Master's in Machine Learning at Carnegie Mellon University.</div>
+            <div class="cta-row">
+              <div class="cta">View Projects →</div>
+              <div class="cta">Resume ↓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-note">
+    <strong>The canvas above is live</strong> — it's running a simplex noise flow field with particles right now. This is the kind of generative background that would fill the viewport behind your content. The gradient veil on the left keeps text readable. Each page could shift the hue or noise frequency for subtle variation.
+  </div>
+
+  <div class="impl-notes">
+    <div class="impl-note">
+      <h4>How it works technically</h4>
+      <p>A single <code>&lt;canvas&gt;</code> in <code>+layout.svelte</code> renders behind all content using <code>position: fixed; z-index: -1</code>. The animation runs in <code>requestAnimationFrame</code> and reads <code>scrollY</code> to gently influence the noise offset. SvelteKit's <code>onNavigate</code> triggers a color/seed transition on route change.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Performance considerations</h4>
+      <p>Canvas 2D is sufficient — no WebGL needed for a flow field. Use <code>devicePixelRatio</code> capping at 2x. Pause animation when tab is hidden via <code>visibilitychange</code>. On mobile, reduce particle count or swap to a static noise texture for battery life.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Content readability</h4>
+      <p>The gradient veil (<code>background: linear-gradient(90deg, rgba(0,0,0,0.7)...)</code>) ensures text contrast. The canvas should be low-contrast and slow-moving — it's atmosphere, not the main event. Content areas can add a subtle <code>backdrop-filter: blur()</code> for extra separation.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Page-specific moods</h4>
+      <p>Each route can pass a reactive <code>theme</code> prop to the canvas component: warm earth tones for projects, cool blues for education, the existing green for gallery. The transition between them uses <code>lerp()</code> on the color values.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ OPTION B: BENTO GRID ═══════════════ -->
+<div id="option-b" class="section">
+  <div class="section-header">
+    <div class="label">Option B</div>
+    <h2>Bento grid homepage</h2>
+    <p>Instead of a linear page with a hero, the home page IS a grid of cards — each one a portal to a section. Different sizes create visual hierarchy without a traditional layout. Hover reveals previews. The grid itself is the navigation.</p>
+  </div>
+
+  <div class="concepts">
+    <div class="concept">
+      <div class="concept-header">
+        <span class="badge alt">Alternative</span>
+        <h3>Homepage as spatial navigation</h3>
+        <p>The intro card is largest (2x2). Other sections get cards that preview their content — skills shows mini-tags, gallery shows a noise gradient, projects shows a card preview. No separate "About" page needed — the intro card IS the about.</p>
+      </div>
+      <div class="concept-body">
+        <div class="wire-bento">
+          <div class="bento-top">
+            <div class="logo">Ming Chong Lim</div>
+            <nav>
+              <a>All</a>
+              <a>Work</a>
+              <a>Projects</a>
+              <a>Education</a>
+            </nav>
+          </div>
+          <div class="bento-grid">
+            <div class="bento-cell intro">
+              <div class="wave">👋</div>
+              <h2>Ming Chong Lim</h2>
+              <p>ML researcher, builder, educator. Currently pursuing a Master's in Machine Learning at Carnegie Mellon University.</p>
+            </div>
+            <div class="bento-cell">
+              <div class="cell-label">Latest Project</div>
+              <div class="cell-title">Improving Image Representations</div>
+              <div class="cell-sub">Region-specific loss minimisation for realistic text in generated images</div>
+              <div class="arrow">→</div>
+            </div>
+            <div class="bento-cell">
+              <div class="cell-label">Experience</div>
+              <div class="cell-title">DRW</div>
+              <div class="cell-sub">Quantitative Developer Intern — Python, C++</div>
+              <div class="arrow">→</div>
+            </div>
+            <div class="bento-cell skills-preview">
+              <div class="cell-label">Skills</div>
+              <div class="mini-tags">
+                <span class="mini-tag hl">Python</span>
+                <span class="mini-tag hl">C/C++</span>
+                <span class="mini-tag hl">PyTorch</span>
+                <span class="mini-tag">React</span>
+                <span class="mini-tag hl">Docker</span>
+                <span class="mini-tag">Vue</span>
+                <span class="mini-tag hl">TensorFlow</span>
+              </div>
+              <div class="arrow">→</div>
+            </div>
+            <div class="bento-cell">
+              <div class="cell-label">Education</div>
+              <div class="cell-title">CMU → NUS → UBC</div>
+              <div class="cell-sub">Machine Learning · Computer Science · Exchange</div>
+              <div class="arrow">→</div>
+            </div>
+            <div class="bento-cell gallery-preview">
+              <div class="preview-text">Gallery</div>
+              <div class="arrow">→</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="impl-notes">
+    <div class="impl-note">
+      <h4>Grid animation on load</h4>
+      <p>Cards stagger in with <code>animation-delay</code> on mount — each card fades up from below with a slight offset. Use Svelte's <code>fly</code> transition with per-card delay calculated from grid position. Takes ~600ms total for the full grid to appear.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Hover micro-interactions</h4>
+      <p>Cards lift on hover with <code>translateY(-4px)</code> and a soft glow via <code>box-shadow</code>. The arrow indicator slides right. The gallery card could show a subtle noise animation on hover via a tiny canvas element.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Combines with Option A</h4>
+      <p>The bento grid works great on top of a subtle generative canvas. The card backgrounds become <code>backdrop-filter: blur(16px)</code> glass panels over the living background. Best of both worlds — spatial navigation with generative atmosphere.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Mobile adaptation</h4>
+      <p>Grid collapses to 2 columns on tablet, single column on mobile. Intro card stays full-width. Cards become tappable with a press-scale effect. The spatial feel translates naturally to vertical scrolling.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ OPTION C: SCROLL NARRATIVE ═══════════════ -->
+<div id="option-c" class="section">
+  <div class="section-header">
+    <div class="label">Option C</div>
+    <h2>Scroll-driven single page</h2>
+    <p>Instead of separate routes, everything lives on one page. Scroll snaps between full-viewport sections. Each section has its own visual treatment — different background gradients, type scales, and layout. An intersection observer triggers reveals as you scroll into each section. The left-side page indicator shows where you are.</p>
+  </div>
+
+  <div class="concepts">
+    <div class="concept">
+      <div class="concept-header">
+        <span class="badge alt">Alternative</span>
+        <h3>Vertical journey through your work</h3>
+        <p>The scroll IS the navigation. A thin progress bar or section dots on the side show position. Content animates in as it enters the viewport — type slides, cards fan out, timelines draw themselves. The gallery section has the grass scene inline. It's a curated tour, not a reference document.</p>
+      </div>
+      <div class="concept-body">
+        <div class="wire-scroll">
+          <div class="scroll-section">
+            <div class="scroll-content">
+              <div class="section-num">001</div>
+              <h2>Ming Chong Lim</h2>
+              <p>ML researcher, builder, educator. Pursuing a Master's in Machine Learning at Carnegie Mellon University. Passionate about solving hard problems with elegant solutions.</p>
+            </div>
+            <div class="scroll-visual">
+              <div class="scroll-visual-label">// generative noise</div>
+            </div>
+            <div class="scroll-indicator">Scroll to explore ↓</div>
+          </div>
+          <div class="scroll-section">
+            <div class="scroll-content">
+              <div class="section-num">002 — Projects</div>
+              <h2>Research & work</h2>
+              <p>From image synthesis to climbing route generation — projects spanning computer vision, NLP, and full-stack development.</p>
+            </div>
+            <div class="scroll-visual">
+              <div class="scroll-visual-label">// project cards</div>
+            </div>
+          </div>
+          <div class="scroll-section">
+            <div class="scroll-content">
+              <div class="section-num">003 — Experience</div>
+              <h2>Where I've worked</h2>
+              <p>Quant development at DRW, ML research at Samsung and DSTA, teaching at CMU and NUS. Six semesters as a TA across both universities.</p>
+            </div>
+            <div class="scroll-visual">
+              <div class="scroll-visual-label">// timeline viz</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="impl-notes">
+    <div class="impl-note">
+      <h4>Intersection Observer reveals</h4>
+      <p>Each section uses <code>IntersectionObserver</code> with threshold 0.3 to trigger entrance animations. Text slides up from below, visual elements scale in from 0.95. Use Svelte's <code>transition:fly</code> on visibility state change. Stagger child elements with CSS <code>animation-delay</code>.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Scroll-linked parallax</h4>
+      <p>The visual panels on the right move at 0.8x scroll speed using <code>transform: translateY(calc(var(--scroll) * -0.2))</code> where <code>--scroll</code> is updated via scroll event. Keep it subtle — 10-20% offset max.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Trade-offs</h4>
+      <p>Single-page layouts hurt deep-linking (no direct URL for education vs experience). Mitigation: use <code>history.replaceState</code> to update the URL hash as sections scroll into view, so links still work. SEO is less relevant for a personal portfolio.</p>
+    </div>
+    <div class="impl-note">
+      <h4>Gallery section inline</h4>
+      <p>The grass Three.js scene becomes one of the scroll sections — it renders in a viewport-sized container within the scroll flow. Use <code>IntersectionObserver</code> to start/stop the animation loop when visible, saving GPU when scrolled past.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ COMPARISON ═══════════════ -->
+<div id="compare" class="section">
+  <div class="section-header">
+    <div class="label">Comparison</div>
+    <h2>Which approach fits your vision?</h2>
+    <p>All three are combinable — A+B is particularly strong. Pick the base and we can mix in elements from others.</p>
+  </div>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th style="width:180px">Aspect</th>
+        <th>A: Generative Canvas</th>
+        <th>B: Bento Grid</th>
+        <th>C: Scroll Narrative</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Uniqueness factor</td>
+        <td>Living background that changes every visit — most sites use flat colors</td>
+        <td>Spatial navigation is rare for portfolios — feels like an app, not a page</td>
+        <td>Curated story — good if your work has a strong narrative arc</td>
+      </tr>
+      <tr>
+        <td>Plays to your strengths</td>
+        <td><span class="pill yes">High</span> — extends your Three.js/shader skills site-wide</td>
+        <td><span class="pill partial">Medium</span> — more CSS/layout craft than graphics programming</td>
+        <td><span class="pill partial">Medium</span> — animation focused but less generative</td>
+      </tr>
+      <tr>
+        <td>Implementation effort</td>
+        <td><span class="pill partial">~3-4 hrs</span> — canvas component + per-route themes</td>
+        <td><span class="pill yes">~2-3 hrs</span> — grid layout + hover animations</td>
+        <td><span class="pill no">~5-6 hrs</span> — intersection observers + scroll state + parallax</td>
+      </tr>
+      <tr>
+        <td>Mobile experience</td>
+        <td>Canvas can be swapped for static noise on low-power devices</td>
+        <td>Grid collapses naturally to 2-col / 1-col</td>
+        <td>Scroll snap works well on mobile, but parallax needs disabling</td>
+      </tr>
+      <tr>
+        <td>Deep-linking</td>
+        <td><span class="pill yes">Yes</span> — keeps existing route structure</td>
+        <td><span class="pill yes">Yes</span> — grid links to existing routes</td>
+        <td><span class="pill partial">Hash-based</span> — needs replaceState workaround</td>
+      </tr>
+      <tr>
+        <td>Combinability</td>
+        <td>Works as a base layer for B or C</td>
+        <td>Best combined with A (glass cards over canvas)</td>
+        <td>Standalone — hard to combine with B</td>
+      </tr>
+      <tr>
+        <td>The "wow" factor</td>
+        <td>Visitor realizes the background is alive — subtle but memorable</td>
+        <td>The grid layout is immediately different from every other portfolio</td>
+        <td>The scroll journey feels cinematic and deliberate</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 40px;">
+    <div class="section-header">
+      <div class="label">Recommendation</div>
+      <h2>A + B combined</h2>
+      <p>Use the generative canvas as an always-on atmospheric background (Option A), with the bento grid as the home page layout (Option B). The glass-card effect of bento cells floating over a living noise field creates something genuinely distinctive. Inner pages (education, experience, etc.) keep the canvas background but use normal content layouts with the existing sidebar-to-top-nav transition later.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Live simplex noise flow field demo ───
+(function() {
+  const canvas = document.getElementById('demo-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], time = 0;
+  const PARTICLE_COUNT = 800;
+
+  // Simplex noise (minimal 2D implementation)
+  const F2 = 0.5 * (Math.sqrt(3) - 1);
+  const G2 = (3 - Math.sqrt(3)) / 6;
+  const grad = [[1,1],[-1,1],[1,-1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]];
+  const perm = new Uint8Array(512);
+  for (let i = 0; i < 256; i++) perm[i] = i;
+  for (let i = 255; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+  for (let i = 256; i < 512; i++) perm[i] = perm[i - 256];
+
+  function noise2d(x, y) {
+    const s = (x + y) * F2;
+    const i = Math.floor(x + s), j = Math.floor(y + s);
+    const t = (i + j) * G2;
+    const x0 = x - (i - t), y0 = y - (j - t);
+    const i1 = x0 > y0 ? 1 : 0, j1 = x0 > y0 ? 0 : 1;
+    const x1 = x0 - i1 + G2, y1 = y0 - j1 + G2;
+    const x2 = x0 - 1 + 2 * G2, y2 = y0 - 1 + 2 * G2;
+    const ii = i & 255, jj = j & 255;
+    let n0 = 0, n1 = 0, n2 = 0;
+    let t0 = 0.5 - x0*x0 - y0*y0;
+    if (t0 > 0) { t0 *= t0; const g = grad[perm[ii + perm[jj]] % 8]; n0 = t0 * t0 * (g[0]*x0 + g[1]*y0); }
+    let t1 = 0.5 - x1*x1 - y1*y1;
+    if (t1 > 0) { t1 *= t1; const g = grad[perm[ii+i1 + perm[jj+j1]] % 8]; n1 = t1 * t1 * (g[0]*x1 + g[1]*y1); }
+    let t2 = 0.5 - x2*x2 - y2*y2;
+    if (t2 > 0) { t2 *= t2; const g = grad[perm[ii+1 + perm[jj+1]] % 8]; n2 = t2 * t2 * (g[0]*x2 + g[1]*y2); }
+    return 70 * (n0 + n1 + n2);
+  }
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = rect.width * 1.5;
+    H = canvas.height = rect.height * 1.5;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+  }
+
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: 0, vy: 0,
+        life: Math.random() * 100
+      });
+    }
+  }
+
+  function animate() {
+    time += 0.003;
+    ctx.fillStyle = 'rgba(10, 10, 10, 0.06)';
+    ctx.fillRect(0, 0, W, H);
+
+    for (const p of particles) {
+      const scale = 0.003;
+      const angle = noise2d(p.x * scale, p.y * scale + time) * Math.PI * 4;
+      p.vx = Math.cos(angle) * 1.2;
+      p.vy = Math.sin(angle) * 1.2;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life += 0.3;
+
+      if (p.x < 0 || p.x > W || p.y < 0 || p.y > H || p.life > 120) {
+        p.x = Math.random() * W;
+        p.y = Math.random() * H;
+        p.life = 0;
+      }
+
+      const alpha = Math.min(p.life / 20, 1) * Math.max(0, 1 - p.life / 120);
+      const hue = 90 + noise2d(p.x * 0.001, p.y * 0.001) * 30;
+      ctx.fillStyle = `hsla(${hue}, 25%, 55%, ${alpha * 0.5})`;
+      ctx.fillRect(p.x, p.y, 1.5, 1.5);
+    }
+    requestAnimationFrame(animate);
+  }
+
+  resize();
+  initParticles();
+  // Initial clear
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, W, H);
+  animate();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+})();
+</script>
+</body>
+</html>

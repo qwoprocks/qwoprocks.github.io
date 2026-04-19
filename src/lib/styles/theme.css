@@ -1,0 +1,144 @@
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	--font-head: 'Space Grotesk', sans-serif;
+	--font-mono: 'IBM Plex Mono', monospace;
+	--ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--theme-transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease,
+		box-shadow 0.5s ease;
+}
+
+[data-theme='dark'] {
+	--bg: #111111;
+	--surface: #181818;
+	--surface-2: #1e1e1e;
+	--border: #2a2a2a;
+	--border-light: #3a3a3a;
+	--text: #c8c4c0;
+	--text-dim: #8a8580;
+	--text-muted: #5a5550;
+	--heading: #e8e4e0;
+	--accent: #ff4040;
+	--accent-dim: rgba(255, 64, 64, 0.07);
+	--accent-soft: rgba(255, 64, 64, 0.3);
+	--grid-opacity: 0.15;
+}
+
+[data-theme='light'] {
+	--bg: #f5f3f0;
+	--surface: #ffffff;
+	--surface-2: #edeae6;
+	--border: #ddd8d0;
+	--border-light: #ccc5ba;
+	--text: #3a3835;
+	--text-dim: #6a6560;
+	--text-muted: #9a9590;
+	--heading: #1a1815;
+	--accent: #d03030;
+	--accent-dim: rgba(208, 48, 48, 0.1);
+	--accent-soft: rgba(208, 48, 48, 0.25);
+	--grid-opacity: 0.06;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: var(--font-mono);
+	background: var(--bg);
+	color: var(--text);
+	line-height: 1.7;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+	transition: var(--theme-transition);
+	margin: 0;
+	padding: 0;
+}
+
+::selection {
+	background: var(--accent);
+	color: #fff;
+}
+
+/* Container */
+.container {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 0 3rem;
+	position: relative;
+	z-index: 1;
+}
+
+/* Section */
+.section {
+	padding: 5rem 0;
+	transition: var(--theme-transition);
+}
+
+/* Reveal animation */
+.reveal {
+	opacity: 0;
+	transform: translateY(20px);
+	transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+
+.reveal.visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.reveal-d1 {
+	transition-delay: 0.1s;
+}
+.reveal-d2 {
+	transition-delay: 0.2s;
+}
+.reveal-d3 {
+	transition-delay: 0.3s;
+}
+
+/* View all link */
+.view-all {
+	display: flex;
+	justify-content: center;
+	margin-top: 2rem;
+}
+
+.view-all a {
+	font-size: 0.6rem;
+	letter-spacing: 0.08em;
+	color: var(--text-muted);
+	text-decoration: none;
+	padding: 0.5rem 1.2rem;
+	border: 1px solid var(--border);
+	transition: all 0.3s;
+}
+
+.view-all a:hover {
+	color: var(--accent);
+	border-color: var(--accent);
+}
+
+@keyframes fadeUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (max-width: 768px) {
+	.container {
+		padding: 0 1.5rem;
+	}
+}
