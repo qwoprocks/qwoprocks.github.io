@@ -429,11 +429,13 @@
   }
 
   // --- Resize handling ---
+  // ResizeObserver handles both window resize and visibility changes
+  // (when display:none is removed, container size goes from 0 to actual)
   let resizeTimer;
-  window.addEventListener('resize', () => {
+  new ResizeObserver(() => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(draw, 100);
-  });
+  }).observe(container);
 
   // Theme change observer
   const themeObserver = new MutationObserver(() => {

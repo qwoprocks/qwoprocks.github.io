@@ -1,9 +1,17 @@
 <script lang="ts">
 	import Footer from '$lib/components/Footer.svelte';
 	import { galleryItems } from '$lib/data/gallery';
+	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	let activeId = $state(galleryItems[0].id);
+	const { data } = $props();
+
+	let activeId = $state(data.tab);
+
+	// Sync when data changes (e.g. browser back/forward triggers SvelteKit navigation)
+	$effect(() => {
+		activeId = data.tab;
+	});
 	const activeItem = $derived(galleryItems.find((i) => i.id === activeId)!);
 
 	let expandedSections = $state<Record<string, boolean>>({});
@@ -63,32 +71,29 @@
 	}
 
 	// --- Maze script loading ---
-	let mazeScriptLoaded = $state(false);
-	let mazeScriptEl: HTMLScriptElement | null = null;
+	let mazeLoaded = $state(false);
 
-	function loadMazeScript() {
-		if (mazeScriptLoaded || !activeItem.scriptSrc) return;
-		// Wait a tick for the .maze-container to render
-		setTimeout(() => {
-			mazeScriptEl = document.createElement('script');
-			mazeScriptEl.src = activeItem.scriptSrc!;
-			mazeScriptEl.onload = () => {
-				mazeScriptLoaded = true;
-			};
-			document.body.appendChild(mazeScriptEl);
-		}, 0);
+	function loadMaze() {
+		if (mazeLoaded) return;
+		const script = document.createElement('script');
+		script.src = '/js/maze/maze.js';
+		script.onload = () => {
+			mazeLoaded = true;
+		};
+		document.body.appendChild(script);
 	}
 
+	// --- Tab switching ---
 	function selectItem(id: string) {
 		activeId = id;
 		expandedSections = {};
-		if (id === 'maze-generator' && !mazeScriptLoaded) {
-			loadMazeScript();
-		}
+		goto(`?tab=${id}`, { noScroll: true, keepFocus: true });
 	}
 
 	onMount(() => {
 		pollForFilters();
+		// Load maze eagerly — 11KB, loads in background while user views grass scene
+		loadMaze();
 	});
 </script>
 
@@ -270,7 +275,7 @@
 
 	.sidebar-title {
 		font-family: var(--font-mono);
-		font-size: var(--text-sm);
+		font-size: var(--text-base);
 		letter-spacing: 0.04em;
 		color: var(--text-muted);
 		transition: color 0.3s;
@@ -286,7 +291,7 @@
 
 	.sidebar-date {
 		font-family: var(--font-mono);
-		font-size: var(--text-2xs);
+		font-size: var(--text-sm);
 		letter-spacing: 0.06em;
 		color: var(--text-muted);
 		opacity: 0.6;
@@ -324,6 +329,8 @@
 		margin-top: 80px;
 		display: flex;
 		justify-content: center;
+		position: relative;
+		min-height: 300px;
 	}
 
 	/* Placeholder while canvas loads */

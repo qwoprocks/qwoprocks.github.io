@@ -1550,6 +1550,17 @@ window.onload = () => {
   RENDERER.setAnimationLoop(animate);
   container.appendChild(RENDERER.domElement);
 
+  // Auto-pause render loop when canvas leaves viewport or panel is hidden
+  const canvasObserver = new IntersectionObserver((entries) => {
+    RENDERER.setAnimationLoop(entries[0].isIntersecting ? animate : null);
+  });
+  canvasObserver.observe(RENDERER.domElement);
+
+  // Also pause when browser tab is backgrounded
+  document.addEventListener('visibilitychange', () => {
+    RENDERER.setAnimationLoop(document.hidden ? null : animate);
+  });
+
   // Add source code button
   const button = document.createElement('a');
   button.className = 'sourceCodeButton noicon';

@@ -11,19 +11,19 @@
 	let expanded = $state(false);
 
 	function toggle() {
-		if (expandable) expanded = !expanded;
+		expanded = !expanded;
 	}
 </script>
 
+{#if expandable}
 <div
-	class="tl-item"
-	class:expandable
+	class="tl-item expandable"
 	class:expanded
 	id={experience.id}
 	onclick={toggle}
 	onkeydown={(e) => e.key === 'Enter' && toggle()}
-	role={expandable ? 'button' : undefined}
-	tabindex={expandable ? 0 : undefined}
+	role="button"
+	tabindex="0"
 >
 	<div class="tl-content">
 		<div class="tl-period">{experience.period}</div>
@@ -32,25 +32,36 @@
 		{#if showDesc && experience.desc}
 			<p class="tl-desc">{experience.desc}</p>
 		{/if}
-		{#if expandable}
-			<div class="tl-detail-hint">
-				<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-					<polyline points="6 9 12 15 18 9" />
-				</svg>
+		<div class="tl-detail-hint">
+			<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+				<polyline points="6 9 12 15 18 9" />
+			</svg>
+		</div>
+		<div class="tl-expand">
+			<div class="tl-expand-inner">
+				<ul class="tl-bullets">
+					{#each experience.bullets as bullet}
+						<li>{bullet}</li>
+					{/each}
+				</ul>
 			</div>
-			<div class="tl-expand">
-				<div class="tl-expand-inner">
-					<ul class="tl-bullets">
-						{#each experience.bullets as bullet}
-							<li>{bullet}</li>
-						{/each}
-					</ul>
-				</div>
-			</div>
+		</div>
+	</div>
+	<span class="exp-tag">{experience.tag}</span>
+</div>
+{:else}
+<div class="tl-item" id={experience.id}>
+	<div class="tl-content">
+		<div class="tl-period">{experience.period}</div>
+		<h3>{experience.title}</h3>
+		<div class="tl-company">{experience.company}</div>
+		{#if showDesc && experience.desc}
+			<p class="tl-desc">{experience.desc}</p>
 		{/if}
 	</div>
 	<span class="exp-tag">{experience.tag}</span>
 </div>
+{/if}
 
 <style>
 	.tl-item {
