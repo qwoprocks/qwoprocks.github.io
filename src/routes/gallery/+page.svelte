@@ -2,16 +2,13 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import { galleryItems } from '$lib/data/gallery';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
-	const { data } = $props();
-
-	let activeId = $state(data.tab);
-
-	// Sync when data changes (e.g. browser back/forward triggers SvelteKit navigation)
-	$effect(() => {
-		activeId = data.tab;
-	});
+	const tabParam = $derived(page.url.searchParams.get('tab'));
+	let activeId = $derived(
+		tabParam && galleryItems.some((i) => i.id === tabParam) ? tabParam : galleryItems[0].id
+	);
 	const activeItem = $derived(galleryItems.find((i) => i.id === activeId)!);
 
 	let expandedSections = $state<Record<string, boolean>>({});
@@ -85,7 +82,6 @@
 
 	// --- Tab switching ---
 	function selectItem(id: string) {
-		activeId = id;
 		expandedSections = {};
 		goto(`?tab=${id}`, { noScroll: true, keepFocus: true });
 	}
