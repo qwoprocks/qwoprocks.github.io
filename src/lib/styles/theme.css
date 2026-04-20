@@ -14,16 +14,16 @@
 		box-shadow 0.5s ease;
 
 	/* Type scale */
-	--text-2xs: 0.5rem;
-	--text-xs: 0.55rem;
-	--text-sm: 0.6rem;
-	--text-base: 0.68rem;
-	--text-md: 0.72rem;
-	--text-lg: 0.8rem;
-	--text-xl: 0.9rem;
-	--text-2xl: 1.05rem;
-	--text-3xl: 1.3rem;
-	--text-4xl: 1.6rem;
+	--text-2xs: 0.55rem;
+	--text-xs: 0.61rem;
+	--text-sm: 0.66rem;
+	--text-base: 0.75rem;
+	--text-md: 0.79rem;
+	--text-lg: 0.88rem;
+	--text-xl: 0.99rem;
+	--text-2xl: 1.16rem;
+	--text-3xl: 1.43rem;
+	--text-4xl: 1.76rem;
 }
 
 [data-theme='dark'] {
@@ -33,8 +33,8 @@
 	--border: #2a2a2a;
 	--border-light: #3a3a3a;
 	--text: #c8c4c0;
-	--text-dim: #8a8580;
-	--text-muted: #5a5550;
+	--text-dim: #9c9690;
+	--text-muted: #77716b;
 	--heading: #e8e4e0;
 	--accent: #ff4040;
 	--accent-dim: rgba(255, 64, 64, 0.07);
@@ -71,7 +71,6 @@ body {
 	background: var(--bg);
 	color: var(--text);
 	line-height: 1.7;
-	-webkit-font-smoothing: antialiased;
 	overflow-x: hidden;
 	transition: var(--theme-transition);
 	margin: 0;
