@@ -2,13 +2,18 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import { galleryItems } from '$lib/data/gallery';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
+	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 
-	const tabParam = $derived(page.url.searchParams.get('tab'));
-	let activeId = $derived(
-		tabParam && galleryItems.some((i) => i.id === tabParam) ? tabParam : galleryItems[0].id
-	);
+	function getInitialTab(): string {
+		if (browser) {
+			const tab = new URL(window.location.href).searchParams.get('tab');
+			if (tab && galleryItems.some((i) => i.id === tab)) return tab;
+		}
+		return galleryItems[0].id;
+	}
+
+	let activeId = $state(getInitialTab());
 	const activeItem = $derived(galleryItems.find((i) => i.id === activeId)!);
 
 	let expandedSections = $state<Record<string, boolean>>({});
@@ -82,11 +87,13 @@
 
 	// --- Tab switching ---
 	function selectItem(id: string) {
+		activeId = id;
 		expandedSections = {};
-		goto(`?tab=${id}`, { noScroll: true, keepFocus: true });
+		goto(`?tab=${id}`, { noScroll: true, keepFocus: true, replaceState: true });
 	}
 
 	onMount(() => {
+		document.documentElement.removeAttribute('data-gallery-tab');
 		pollForFilters();
 		// Load maze eagerly — 11KB, loads in background while user views grass scene
 		loadMaze();
@@ -305,6 +312,12 @@
 
 	.experiment-panel.hidden {
 		display: none;
+	}
+
+	/* Pre-hydration: hide all content when a non-default tab is in the URL,
+	   preventing flash of wrong tab. Removed by onMount after hydration. */
+	:global(html[data-gallery-tab]) .gallery-layout {
+		visibility: hidden;
 	}
 
 	.wrapper {
