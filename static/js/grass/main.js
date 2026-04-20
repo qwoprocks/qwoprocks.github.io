@@ -1530,15 +1530,18 @@ window.onload = () => {
     let delta = CLOCK.getDelta();
     delta_fps += delta;
     if (delta && delta != null) {
+      let did_update = false;
       while (delta_fps >= DESIRED_DT) {
         if (delta_fps < 0.3) {
           grass.material.uniforms.uTime.value += 0.004;
-          grass.material.needsUpdate = true;
           clouds.material.uniforms.frame.value += 0.004;
-    
-          composer.render(SCENE, CAMERA);
+          
+          did_update = true;
         }
         delta_fps -= DESIRED_DT;
+      }
+      if (did_update) {
+        composer.render(SCENE, CAMERA);
       }
     }
   }
